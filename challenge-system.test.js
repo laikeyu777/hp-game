@@ -70,6 +70,13 @@ test('sanitizeChallengeSave normalizes record shapes and drops malformed entries
   assert.equal(save.recentRecords.length, 1);
 });
 
+test('v4 challenge save migrates to an empty v5 shape', () => {
+  const save = Challenge.sanitizeChallengeSave({ personalBest: { highestFloor: 4 } });
+  assert.equal(save.personalBest.highestFloor, 4);
+  assert.equal(save.personalBest.highestScore, 0);
+  assert.deepEqual(save.personalBest.weapons, { sword: 0, staff: 0, crossbow: 0 });
+});
+
 test('updatePersonalBest tracks daily best and recent records with a 30 item cap', () => {
   let save = Challenge.sanitizeChallengeSave({});
   for (let i = 0; i < 31; i += 1) {
