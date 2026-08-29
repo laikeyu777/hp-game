@@ -123,7 +123,7 @@
 
   function isValidRecord(record) {
     if (!record || typeof record !== 'object') return false;
-    if (typeof record.code !== 'string' || !/^ASH-\d{8}-V\d+-[A-Z0-9]{4}$/i.test(record.code)) return false;
+    if ((typeof record.code !== 'string' || !/^ASH-\d{8}-V\d+-[A-Z0-9]{4}$/i.test(record.code)) && record.mode !== 'normal') return false;
     if (typeof record.score !== 'number' || !Number.isFinite(record.score)) return false;
     if (typeof record.completedFloors !== 'number' || !Number.isFinite(record.completedFloors)) return false;
     if (typeof record.durationMs !== 'number' || !Number.isFinite(record.durationMs)) return false;
