@@ -199,6 +199,7 @@
 
     save.personalBest.highestFloor = Math.max(save.personalBest.highestFloor, record.completedFloors);
     save.personalBest.highestScore = Math.max(save.personalBest.highestScore, record.score);
+    if (record.cleared && (!save.personalBest.fastestClearMs || record.durationMs < save.personalBest.fastestClearMs)) save.personalBest.fastestClearMs = record.durationMs;
     if (record.weapon && Object.prototype.hasOwnProperty.call(save.personalBest.weapons, record.weapon)) {
       save.personalBest.weapons[record.weapon] = Math.max(save.personalBest.weapons[record.weapon], record.score);
     }
