@@ -99,7 +99,7 @@
       hp: Math.round(hpRatio * 500),
       gold: gold * 5,
       clearBonus: cleared ? 10000 : 0,
-      speedBonus: cleared && durationMs <= 300000 ? 3000 : 0,
+      speedBonus: cleared ? Math.max(0, 6000 - Math.floor(durationMs / 1000) * 10) : 0,
     };
     const score = Object.values(breakdown).reduce((sum, value) => sum + value, 0);
     return { score, breakdown };
@@ -147,10 +147,14 @@
     const sanitizedRecentRecords = recentRecords.filter(isValidRecord).map(record => ({ ...record })).slice(0, MAX_RECENT_RECORDS);
     return {
       personalBest: {
-        highestFloor: Number(personalBest.highestFloor) || 0,
-        bestScore: Number(personalBest.bestScore) || 0,
-        bestDurationMs: Number(personalBest.bestDurationMs) || 0,
-        bestWeapon: typeof personalBest.bestWeapon === 'string' ? personalBest.bestWeapon : '',
+        highestScore: Math.max(0, Number(personalBest.highestScore ?? personalBest.bestScore) || 0),
+        fastestClearMs: Number(personalBest.fastestClearMs ?? (personalBest.bestDurationMs || 0)) || null,
+        highestFloor: Math.max(0, Number(personalBest.highestFloor) || 0),
+        weapons: {
+          sword: Math.max(0, Number(personalBest.weapons?.sword) || 0),
+          staff: Math.max(0, Number(personalBest.weapons?.staff) || 0),
+          crossbow: Math.max(0, Number(personalBest.weapons?.crossbow) || 0),
+        },
       },
       dailyBest: sanitizedDailyBest,
       recentRecords: sanitizedRecentRecords,
@@ -194,14 +198,16 @@
     if (!isValidRecord(record)) return save;
 
     save.personalBest.highestFloor = Math.max(save.personalBest.highestFloor, record.completedFloors);
-    save.personalBest.bestScore = Math.max(save.personalBest.bestScore, record.score);
-    if (!save.personalBest.bestDurationMs || record.durationMs < save.personalBest.bestDurationMs) {
-      save.personalBest.bestDurationMs = record.durationMs;
-      save.personalBest.bestWeapon = record.weapon || save.personalBest.bestWeapon;
+    save.personalBest.highestScore = Math.max(save.personalBest.highestScore, record.score);
+    if (record.weapon && Object.prototype.hasOwnProperty.call(save.personalBest.weapons, record.weapon)) {
+      save.personalBest.weapons[record.weapon] = Math.max(save.personalBest.weapons[record.weapon], record.score);
     }
 
-    save.dailyBest[record.code] = { ...record };
-    save.recentRecords = [record, ...save.recentRecords].slice(0, MAX_RECENT_RECORDS);
+    if (mode === 'daily') {
+      const previous = save.dailyBest[record.code];
+      if (!previous || compareResults(record, previous) > 0) save.dailyBest[record.code] = { ...record };
+      save.recentRecords = [record, ...save.recentRecords].slice(0, MAX_RECENT_RECORDS);
+    }
     return save;
   }
 

@@ -63,6 +63,9 @@ test('sanitizeChallengeSave normalizes record shapes and drops malformed entries
   });
 
   assert.equal(save.personalBest.highestFloor, 2);
+  assert.equal(save.personalBest.highestScore, 3);
+  assert.equal(save.personalBest.fastestClearMs, 4);
+  assert.deepEqual(save.personalBest.weapons, { sword: 0, staff: 0, crossbow: 0 });
   assert.deepEqual(Object.keys(save.dailyBest), ['ASH-20260830-V1-AAAA']);
   assert.equal(save.recentRecords.length, 1);
 });
@@ -89,6 +92,15 @@ test('updatePersonalBest tracks daily best and recent records with a 30 item cap
   assert.equal(save.recentRecords.length, 30);
   assert.equal(save.personalBest.highestFloor, 31);
   assert.equal(save.dailyBest['ASH-20260831-V1-AAAA'].score, 30);
+  assert.equal(save.personalBest.weapons.sword, 30);
+});
+
+test('speed bonus follows the duration formula and normal mode does not add daily records', () => {
+  assert.equal(Challenge.calculateScore({ completedFloors: 50, durationMs: 600000, cleared: true }).breakdown.speedBonus, 0);
+  let save = Challenge.sanitizeChallengeSave({});
+  save = Challenge.updatePersonalBest(save, { code: 'ASH-20260830-V1-AAAA', score: 10, completedFloors: 2, durationMs: 1000, weapon: 'sword' }, 'normal');
+  assert.deepEqual(save.dailyBest, {});
+  assert.equal(save.recentRecords.length, 0);
 });
 
 test('formatDuration and formatShareText produce readable summaries', () => {
