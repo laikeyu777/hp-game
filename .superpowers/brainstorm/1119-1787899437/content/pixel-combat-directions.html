@@ -1,0 +1,56 @@
+<style>
+  .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .card { overflow: hidden; }
+  .card-image { padding: 0; background: #09100e; border-bottom: 1px solid #253630; }
+  .pixel-preview { display: block; width: 100%; aspect-ratio: 14 / 9; image-rendering: pixelated; }
+  .tag { display: inline-block; margin-bottom: 8px; padding: 4px 7px; border: 1px solid #355047; color: #91b4a8; font: 700 10px/1 monospace; }
+  .card-body p { min-height: 42px; }
+  .notes { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .notes span { color: #a9beb6; font-size: 11px; border-left: 2px solid #f28b4b; padding-left: 6px; }
+  @media (max-width: 820px) { .cards { grid-template-columns: 1fr; } .card-body p { min-height: 0; } }
+</style>
+
+<h2>像素人物与技能特效方向</h2>
+<p class="subtitle">请选择最适合《灰烬回廊》的战斗观感。点击卡片即可选择。</p>
+
+<div class="cards">
+  <div class="card" data-choice="a-ash-vanguard" onclick="toggleSelect(this)">
+    <div class="card-image"><canvas class="pixel-preview" id="preview-a" width="280" height="180"></canvas></div>
+    <div class="card-body">
+      <span class="tag">推荐 · 16×24 骨架</span>
+      <h3>A. 灰烬先锋</h3>
+      <p>厚重轮廓、橙红披风、武器高亮。挥砍采用扇形火弧和方形火星，手机上最容易辨认。</p>
+      <div class="notes"><span>清晰度最高</span><span>动作有力量感</span></div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b-rune-wanderer" onclick="toggleSelect(this)">
+    <div class="card-image"><canvas class="pixel-preview" id="preview-b" width="280" height="180"></canvas></div>
+    <div class="card-body">
+      <span class="tag">细节型 · 24×32 骨架</span>
+      <h3>B. 符文旅者</h3>
+      <p>兜帽、青色符文和分层服装。技能是聚能法阵与粒子弹，法杖表现最好，但小屏细节略密。</p>
+      <div class="notes"><span>魔法感最强</span><span>动画层次丰富</span></div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c-corridor-shadow" onclick="toggleSelect(this)">
+    <div class="card-image"><canvas class="pixel-preview" id="preview-c" width="280" height="180"></canvas></div>
+    <div class="card-body">
+      <span class="tag">氛围型 · 剪影骨架</span>
+      <h3>C. 回廊暗影</h3>
+      <p>深色剪影配紫色轮廓光。技能使用裂隙闪烁和残影，氛围最神秘，但三种武器区分较弱。</p>
+      <div class="notes"><span>氛围最突出</span><span>首领感强</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const px=(c,x,y,w,h,color)=>{c.fillStyle=color;c.fillRect(x,y,w,h)};
+  function room(c){c.imageSmoothingEnabled=false;px(c,0,0,280,180,'#08100e');px(c,0,145,280,35,'#101b17');for(let x=0;x<280;x+=28)px(c,x,145,1,35,'#26362f');for(let y=18;y<145;y+=32)px(c,0,y,280,1,'#17251f')}
+  function enemy(c,color){px(c,220,82,16,42,'#1d2824');px(c,216,72,24,16,color);px(c,220,76,4,4,'#f1c65a');px(c,232,76,4,4,'#f1c65a');px(c,214,124,10,8,'#26362f');px(c,232,124,10,8,'#26362f')}
+  function vanguard(){const c=document.querySelector('#preview-a').getContext('2d');room(c);enemy(c,'#9a4f45');px(c,60,70,24,20,'#d8b18b');px(c,56,66,32,8,'#303b36');px(c,58,90,28,38,'#43584e');px(c,48,92,12,32,'#d85f42');px(c,84,94,8,26,'#d6a85b');px(c,92,86,4,38,'#e8e2cc');px(c,56,128,10,8,'#222d29');px(c,76,128,10,8,'#222d29');px(c,102,68,6,6,'#f6c25b');px(c,112,64,8,8,'#f58b4a');px(c,126,68,10,10,'#e76844');px(c,140,78,12,12,'#f58b4a');px(c,156,90,14,14,'#f3c95a');px(c,174,101,24,8,'#f58b4a');px(c,198,105,12,4,'#ffd885')}
+  function rune(){const c=document.querySelector('#preview-b').getContext('2d');room(c);enemy(c,'#6e5aa8');px(c,60,60,30,12,'#172f2c');px(c,54,70,42,45,'#244d46');px(c,64,72,20,18,'#d2aa85');px(c,60,92,30,42,'#2d655b');px(c,67,101,4,4,'#70ead9');px(c,79,109,4,4,'#70ead9');px(c,91,76,5,58,'#8966c4');px(c,88,68,12,12,'#b68cff');px(c,54,134,12,7,'#17231f');px(c,80,134,12,7,'#17231f');c.strokeStyle='#66d3c2';c.lineWidth=4;c.strokeRect(130,72,44,44);c.strokeStyle='#b68cff';c.strokeRect(138,80,28,28);px(c,177,88,8,8,'#d3fff7');px(c,190,90,12,4,'#66d3c2');px(c,205,88,18,8,'#b68cff')}
+  function shadow(){const c=document.querySelector('#preview-c').getContext('2d');room(c);enemy(c,'#713e7d');px(c,58,62,30,12,'#342841');px(c,52,72,42,58,'#171a20');px(c,62,70,20,19,'#675178');px(c,48,92,10,36,'#8c55a2');px(c,91,88,6,45,'#b68cff');px(c,56,130,12,7,'#111719');px(c,80,130,12,7,'#111719');for(let i=0;i<5;i++){px(c,104+i*18,70+i*8,12,22,'rgba(182,140,255,'+(0.2+i*.12)+')')}px(c,188,102,26,6,'#b68cff');px(c,204,94,18,22,'#6e3f83');px(c,216,86,6,6,'#e5caff')}
+  vanguard();rune();shadow();
+</script>
