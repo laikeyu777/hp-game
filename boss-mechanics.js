@@ -17,6 +17,11 @@
     return { ...base, phase, intervalMs: Math.round(base.intervalMs / phaseScale), damageMultiplier: Math.round(base.damageMultiplier * phaseScale * 100) / 100 };
   }
 
+  function getBossIntro(bossId) {
+    const mechanic = getBossMechanic(bossId, 1);
+    return `首领机制：${mechanic.name}。看到预警区域后及时释放技能或准备承伤。`;
+  }
+
   function seeded(seed) {
     const value = Math.sin(Number(seed) * 12.9898) * 43758.5453;
     return value - Math.floor(value);
@@ -37,5 +42,5 @@
     return result;
   }
 
-  return { definitions, getBossMechanic, createBossEvent, resolveBossEvent };
+  return { definitions, getBossMechanic, getBossIntro, createBossEvent, resolveBossEvent };
 });

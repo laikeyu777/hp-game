@@ -2,6 +2,8 @@ const assert = require('assert');
 const BossMechanics = require('./boss-mechanics.js');
 
 const ids = ['furnace-lord', 'frost-queen', 'root-mother', 'sky-executioner', 'void-pioneer'];
+assert.match(BossMechanics.getBossIntro('frost-queen'), /冻结冰刺/);
+assert.match(BossMechanics.getBossIntro('unknown'), /熔岩裂缝/);
 const mechanics = ids.map(id => BossMechanics.getBossMechanic(id, 2));
 assert.equal(new Set(mechanics.map(item => item.type)).size, 5);
 mechanics.forEach(item => {
