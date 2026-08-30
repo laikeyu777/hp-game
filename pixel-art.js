@@ -68,6 +68,40 @@
     staff: [[8,0,16,2,'robe'],[5,2,22,3,'robe'],[3,5,4,10,'robe'],[25,5,4,10,'robe'],[6,28,20,12,'robe'],[4,33,5,10,'robe'],[23,33,5,10,'robe'],[8,39,16,6,'robe'],[9,29,3,2,'robeLight'],[20,29,3,2,'robeLight'],[27,8,7,2,'rune'],[29,7,3,3,'crystal'],[30,11,2,2,'crystal'],[6,40,4,4,'rune'],[22,40,4,4,'rune']],
     crossbow: [[8,0,14,2,'ranger'],[4,2,7,5,'ranger'],[19,2,9,5,'ranger'],[2,6,6,8,'ranger'],[25,6,6,8,'ranger'],[1,15,5,7,'rangerLight'],[24,15,7,7,'metal'],[5,26,5,11,'ranger'],[22,26,5,11,'ranger'],[26,32,7,10,'ranger'],[0,35,5,8,'ranger'],[6,19,4,6,'rangerLight'],[23,29,5,5,'ranger'],[27,36,5,2,'metal'],[28,23,4,2,'bolt'],[30,26,5,2,'metal']],
   };
+  const HERO_SILHOUETTES = {
+    sword: [
+      { points: [[6, 0], [26, 0], [30, 5], [27, 12], [5, 12], [2, 6]], color: 'heavyArmor' },
+      { points: [[1, 19], [9, 17], [11, 37], [5, 42], [1, 38]], color: 'heavyArmor' },
+    ],
+    staff: [
+      { points: [[7, 2], [16, 0], [25, 2], [27, 10], [22, 15], [9, 15], [4, 9]], color: 'robe' },
+      { points: [[8, 27], [24, 27], [29, 43], [23, 47], [9, 47], [3, 42]], color: 'robe' },
+    ],
+    crossbow: [
+      { points: [[5, 1], [22, 1], [28, 6], [25, 15], [8, 15], [2, 9]], color: 'ranger' },
+      { points: [[6, 24], [22, 21], [28, 35], [24, 44], [9, 44], [3, 34]], color: 'ranger' },
+    ],
+  };
+  const HERO_ROLE_FEATURES = {
+    sword: [
+      [7, 9, 11, 3, '#25201a'], [8, 12, 9, 2, '#151a18'], [10, 14, 2, 1, '#d6a46a'],
+      [18, 10, 5, 2, '#25201a'], [19, 12, 3, 1, '#d6a46a'],
+      [13, 9, 2, 1, '#d6a46a'], [15, 12, 1, 3, '#25201a'], [5, 22, 2, 9, '#25201a'],
+      [2, 24, 5, 1, '#d6a46a'], [4, 27, 1, 5, '#d6a46a'], [6, 24, 1, 5, '#d6a46a'],
+    ],
+    staff: [
+      [8, 7, 15, 5, '#1a1630'], [10, 12, 10, 2, '#34285e'], [12, 13, 3, 2, '#66f0dc'],
+      [25, 9, 3, 5, '#1a1630'], [28, 11, 3, 2, '#c28cff'],
+      [9, 5, 12, 1, '#70b8d4'], [6, 16, 4, 2, '#c28cff'], [24, 16, 4, 2, '#c28cff'],
+      [11, 27, 2, 4, '#70b8d4'], [20, 27, 2, 4, '#70b8d4'], [29, 5, 1, 7, '#1a1630'],
+    ],
+    crossbow: [
+      [8, 9, 13, 3, '#10282d'], [9, 12, 5, 2, '#153d47'], [18, 12, 4, 2, '#153d47'],
+      [10, 10, 3, 1, '#d9e8ff'], [19, 10, 3, 1, '#d9e8ff'], [22, 15, 4, 2, '#10282d'],
+      [6, 8, 3, 5, '#10282d'], [22, 8, 4, 2, '#d9e8ff'], [24, 10, 2, 4, '#10282d'],
+      [27, 24, 5, 2, '#e0bd6f'], [28, 27, 4, 2, '#10282d'], [25, 30, 3, 7, '#153d47'],
+    ],
+  };
   const WEAPON_PARTS = {
     sword: [[30,18,2,22,'white'],[28,17,6,2,'brass'],[30,40,2,5,'leather'],[29,18,1,18,'hairLight']],
     staff: [[29,12,3,33,'leather'],[27,8,7,7,'brass'],[29,9,3,4,'white'],[26,7,3,3,'emberEye'],[33,11,3,3,'emberEye']],
@@ -82,6 +116,19 @@
     });
   }
 
+  function drawPixelPolygon(ctx, points, x, y, scale, palette, color, offsetY = 0) {
+    ctx.imageSmoothingEnabled = false;
+    ctx.fillStyle = palette[color] || color;
+    ctx.beginPath();
+    points.forEach(([px, py], index) => {
+      const drawX = Math.round(x + px * scale);
+      const drawY = Math.round(y + (py + offsetY) * scale);
+      if (index === 0) ctx.moveTo(drawX, drawY); else ctx.lineTo(drawX, drawY);
+    });
+    ctx.closePath();
+    ctx.fill();
+  }
+
   function drawHero(ctx, model = {}) {
     const scale = Math.max(1, Math.round(model.scale || 2));
     const frame = model.reducedMotion ? 0 : (model.frame || 0) % 4;
@@ -91,10 +138,12 @@
     const rolePalette = { ...HERO_PALETTE, ...HERO_ROLE_PALETTES[weapon] };
     const palette = model.hitFlash ? { ...rolePalette, skin: '#fff0c7', armor: '#fff0c7', armorShadow: '#e7ece7', cloak: '#fff0c7' } : rolePalette;
     const breathing = model.pose === 'attack' || model.reducedMotion ? 0 : (frame >= 2 ? 1 : 0);
+    HERO_SILHOUETTES[weapon].forEach(shape => drawPixelPolygon(ctx, shape.points, x, y, scale, palette, shape.color, breathing));
     drawParts(ctx, HERO_PARTS, x, y, scale, palette, breathing);
     drawParts(ctx, HERO_DETAIL_PARTS, x, y, scale, palette, breathing);
     drawParts(ctx, HERO_FINE_PARTS, x, y, scale, palette, breathing);
     drawParts(ctx, HERO_ROLE_PARTS[weapon], x, y, scale, palette, breathing);
+    drawParts(ctx, HERO_ROLE_FEATURES[weapon], x, y, scale, palette, breathing);
     if (!model.reducedMotion && frame >= 2) {
       drawParts(ctx, [[0,31,3,10,'cloak'],[2,39,5,3,'cloakDark']], x, y, scale, palette, 0, -1);
     }
@@ -274,6 +323,82 @@
     'sky-executioner': [[19,17,1,1,'detail'],[25,18,1,1,'rift'],[32,17,1,1,'detail'],[40,16,1,1,'rift'],[47,13,1,1,'detail'],[56,12,1,1,'rift'],[4,9,1,1,'ember'],[10,11,1,1,'rift'],[17,8,1,1,'detail'],[45,8,1,1,'rift'],[53,7,1,1,'detail'],[62,10,1,1,'ember'],[27,24,1,1,'rift'],[33,26,1,1,'detail'],[41,24,1,1,'rift'],[49,21,1,1,'detail'],[59,20,1,1,'rift']],
     'void-pioneer': [[10,19,1,1,'rift'],[16,18,1,1,'detail'],[23,16,1,1,'rift'],[29,15,1,1,'detail'],[37,17,1,1,'rift'],[44,16,1,1,'detail'],[52,14,1,1,'rift'],[59,17,1,1,'detail'],[7,24,1,1,'eye'],[14,25,1,1,'rift'],[21,28,1,1,'detail'],[29,25,1,1,'rift'],[36,27,1,1,'detail'],[45,25,1,1,'rift'],[54,27,1,1,'detail'],[61,23,1,1,'rift'],[19,40,1,1,'rift'],[33,39,1,1,'ember'],[49,40,1,1,'rift']],
   };
+  const BOSS_BEAST_POLYGONS = {
+    'furnace-lord': [
+      { points: [[4, 12], [13, 5], [24, 7], [32, 14], [46, 12], [58, 18], [50, 30], [22, 31], [8, 25]], color: 'armor' },
+      { points: [[3, 8], [0, 1], [8, 4], [15, 11]], color: 'ember' },
+      { points: [[46, 12], [58, 5], [62, 7], [55, 18]], color: 'armorDark' },
+      { points: [[52, 20], [66, 19], [63, 25], [55, 27]], color: 'armor' },
+      { points: [[16, 28], [22, 28], [20, 44], [14, 41]], color: 'armorDark' },
+      { points: [[39, 28], [46, 28], [48, 42], [41, 44]], color: 'armorDark' },
+    ],
+    'frost-queen': [
+      { points: [[7, 18], [14, 11], [24, 12], [31, 18], [42, 17], [55, 21], [48, 30], [22, 30]], color: 'armor' },
+      { points: [[8, 13], [1, 7], [10, 7], [18, 14]], color: 'rift' },
+      { points: [[39, 17], [50, 5], [61, 3], [55, 18]], color: 'rift' },
+      { points: [[7, 17], [1, 22], [11, 24], [18, 20]], color: 'armorDark' },
+      { points: [[42, 25], [59, 25], [65, 29], [48, 31]], color: 'rift' },
+      { points: [[18, 27], [24, 27], [21, 44], [15, 39]], color: 'armorDark' },
+    ],
+    'root-mother': [
+      { points: [[8, 12], [18, 5], [34, 3], [51, 9], [59, 17], [51, 28], [16, 31], [3, 23]], color: 'armor' },
+      { points: [[7, 12], [9, 0], [17, 7], [22, 1], [29, 9]], color: 'rift' },
+      { points: [[34, 7], [41, 0], [47, 8], [56, 4], [55, 16]], color: 'rift' },
+      { points: [[3, 23], [0, 34], [9, 31], [14, 26]], color: 'armorDark' },
+      { points: [[48, 25], [63, 22], [65, 33], [54, 35]], color: 'armorDark' },
+      { points: [[13, 28], [20, 28], [17, 47], [10, 45]], color: 'armorDark' },
+      { points: [[40, 28], [48, 28], [52, 46], [44, 47]], color: 'armorDark' },
+    ],
+    'sky-executioner': [
+      { points: [[16, 14], [28, 8], [43, 12], [53, 21], [45, 29], [23, 29], [12, 23]], color: 'armor' },
+      { points: [[16, 16], [2, 3], [0, 14], [16, 24]], color: 'rift' },
+      { points: [[40, 14], [55, 2], [66, 1], [57, 22]], color: 'rift' },
+      { points: [[48, 15], [65, 16], [61, 23], [51, 23]], color: 'armorDark' },
+      { points: [[20, 26], [27, 26], [25, 43], [18, 41]], color: 'armorDark' },
+      { points: [[38, 26], [45, 26], [50, 42], [43, 43]], color: 'armorDark' },
+    ],
+    'void-pioneer': [
+      { points: [[3, 18], [14, 10], [29, 9], [43, 14], [57, 9], [64, 17], [57, 28], [42, 26], [29, 32], [14, 28]], color: 'armor' },
+      { points: [[3, 18], [0, 10], [12, 13], [18, 20]], color: 'rift' },
+      { points: [[49, 14], [64, 7], [66, 14], [58, 21]], color: 'rift' },
+      { points: [[12, 27], [4, 36], [15, 33], [21, 28]], color: 'rift' },
+      { points: [[42, 25], [60, 30], [52, 37], [39, 30]], color: 'rift' },
+    ],
+  };
+  const BOSS_BEAST_FEATURES = {
+    'furnace-lord': [
+      [7, 13, 4, 2, '#0d0b12'], [8, 14, 2, 1, '#fff0c7'], [2, 20, 12, 4, '#0d0b12'],
+      [5, 20, 2, 1, '#fff0c7'], [9, 20, 2, 1, '#fff0c7'], [13, 17, 3, 2, '#0d0b12'],
+      [1, 10, 4, 5, '#0d0b12'], [4, 15, 3, 2, '#fff0c7'], [14, 22, 2, 2, '#fff0c7'],
+      [20, 14, 2, 2, '#0d0b12'], [25, 17, 2, 2, '#fff0c7'],
+    ],
+    'frost-queen': [
+      [10, 15, 4, 2, '#0d0b12'], [11, 15, 2, 1, '#fff0c7'], [2, 18, 10, 3, '#0d0b12'],
+      [4, 18, 2, 1, '#fff0c7'], [7, 18, 2, 1, '#fff0c7'], [14, 19, 3, 2, '#0d0b12'],
+      [0, 12, 7, 4, '#0d0b12'], [1, 13, 2, 1, '#b8f1ff'], [15, 12, 3, 2, '#b8f1ff'],
+      [20, 20, 4, 2, '#0d0b12'], [24, 20, 2, 1, '#fff0c7'],
+    ],
+    'root-mother': [
+      [18, 15, 5, 3, '#0d0b12'], [37, 15, 5, 3, '#0d0b12'], [20, 16, 1, 1, '#e7ffb0'],
+      [39, 16, 1, 1, '#e7ffb0'], [24, 21, 12, 4, '#0d0b12'], [27, 21, 2, 1, '#9fe36b'],
+      [31, 21, 2, 1, '#9fe36b'], [35, 21, 1, 1, '#9fe36b'],
+      [14, 7, 4, 3, '#0d0b12'], [43, 7, 4, 3, '#0d0b12'], [15, 8, 2, 1, '#e7ffb0'],
+      [44, 8, 2, 1, '#e7ffb0'], [28, 27, 3, 2, '#0d0b12'], [33, 27, 3, 2, '#0d0b12'],
+    ],
+    'sky-executioner': [
+      [47, 11, 4, 3, '#0d0b12'], [48, 12, 2, 1, '#e7f0ff'], [56, 16, 10, 4, '#0d0b12'],
+      [62, 17, 3, 1, '#fff0c7'], [58, 20, 3, 2, '#0d0b12'], [52, 12, 3, 2, '#0d0b12'],
+      [61, 13, 5, 3, '#0d0b12'], [65, 14, 2, 1, '#fff0c7'], [51, 22, 3, 4, '#0d0b12'],
+      [56, 23, 3, 4, '#0d0b12'], [44, 7, 3, 2, '#e7f0ff'],
+    ],
+    'void-pioneer': [
+      [49, 11, 4, 3, '#0d0b12'], [50, 12, 2, 1, '#fff0c7'], [56, 15, 4, 3, '#0d0b12'],
+      [57, 16, 2, 1, '#fff0c7'], [52, 21, 12, 4, '#0d0b12'], [55, 21, 2, 1, '#c38cff'],
+      [59, 21, 2, 1, '#c38cff'], [61, 21, 2, 1, '#c38cff'],
+      [43, 9, 4, 3, '#0d0b12'], [44, 10, 2, 1, '#fff0c7'], [36, 23, 3, 3, '#0d0b12'],
+      [40, 24, 2, 1, '#c38cff'], [46, 25, 2, 1, '#c38cff'], [50, 26, 2, 1, '#c38cff'],
+    ],
+  };
 
   const themedPalettes = {
     'ice-wraith': { outline:'#17232b', body:'#547487', bodyDark:'#2b414d', eye:'#b8f1ff', core:'#80d8ff', weapon:'#dff8ff' },
@@ -312,7 +437,10 @@
     if (isBoss && model.bossPhase === 2) palette.rift = '#f58b4a';
     const bob = model.reducedMotion ? 0 : ((model.frame || 0) % 4 === 2 ? -1 : 0);
     if (isBoss && BOSS_BEAST_PARTS[kind]) {
-      drawParts(ctx, BOSS_BEAST_PARTS[kind], model.x - 32 * scale, model.y - 24 * scale, scale, palette, bob);
+      const beastX = model.x - 32 * scale, beastY = model.y - 24 * scale;
+      drawParts(ctx, BOSS_BEAST_PARTS[kind], beastX, beastY, scale, palette, bob);
+      BOSS_BEAST_POLYGONS[kind].forEach(shape => drawPixelPolygon(ctx, shape.points, beastX, beastY, scale, palette, shape.color, bob));
+      drawParts(ctx, BOSS_BEAST_FEATURES[kind], beastX, beastY, scale, palette, bob);
       drawParts(ctx, BOSS_FINE_PARTS[kind], model.x - 32 * scale, model.y - 24 * scale, scale, palette, bob);
       if (model.bossPhase === 2) {
         const pulse = 7 + ((model.frame || 0) % 4) * 2;

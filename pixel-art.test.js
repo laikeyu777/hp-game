@@ -68,6 +68,19 @@ const heroGeometry = ['sword', 'staff', 'crossbow'].map(weapon => {
   return ctx.operations.filter(operation => operation[0] === 'fillRect').length;
 });
 assert.equal(new Set(heroGeometry).size, 3);
+const heroPathSignatures = ['sword', 'staff', 'crossbow'].map(weapon => {
+  const ctx = recordingContext();
+  PixelArt.drawHero(ctx, { x: 80, y: 250, scale: 2, weapon, frame: 0, pose: 'idle' });
+  return JSON.stringify(ctx.operations.filter(operation => ['moveTo', 'lineTo', 'fill'].includes(operation[0])));
+});
+assert.ok(heroPathSignatures.every(signature => signature !== '[]'));
+assert.equal(new Set(heroPathSignatures).size, 3);
+const heroFeatureMarkers = ['#25201a', '#1a1630', '#10282d'];
+for (const weapon of ['sword', 'staff', 'crossbow']) {
+  const ctx = recordingContext();
+  PixelArt.drawHero(ctx, { x: 80, y: 250, scale: 2, weapon, frame: 0, pose: 'idle' });
+  assert.ok(ctx.operations.some(operation => heroFeatureMarkers.some(color => operation.includes(color))));
+}
 const fineHero = recordingContext();
 PixelArt.drawHero(fineHero, { x: 80, y: 250, scale: 2, weapon: 'staff', frame: 0, pose: 'idle' });
 assert.ok(fineHero.operations.filter(operation => operation[0] === 'fillRect' && operation[3] <= 2).length >= 18);
@@ -142,6 +155,18 @@ const bossSignatures = bossKinds.map(kind => {
   return JSON.stringify(ctx.operations);
 });
 assert.equal(new Set(bossSignatures).size, bossKinds.length);
+const bossPathSignatures = bossKinds.map(kind => {
+  const ctx = recordingContext();
+  PixelArt.drawEnemy(ctx, { kind, x: 200, y: 150, scale: 2, frame: 0, bossPhase: 1 });
+  return JSON.stringify(ctx.operations.filter(operation => ['moveTo', 'lineTo', 'fill'].includes(operation[0])));
+});
+assert.ok(bossPathSignatures.every(signature => signature !== '[]'));
+assert.equal(new Set(bossPathSignatures).size, bossKinds.length);
+for (const kind of bossKinds) {
+  const ctx = recordingContext();
+  PixelArt.drawEnemy(ctx, { kind, x: 200, y: 150, scale: 2, frame: 0, bossPhase: 1 });
+  assert.ok(ctx.operations.some(operation => operation.includes('#0d0b12')));
+}
 const fineBoss = recordingContext();
 PixelArt.drawEnemy(fineBoss, { kind: 'void-pioneer', x: 200, y: 150, scale: 2, frame: 0, bossPhase: 1 });
 assert.ok(fineBoss.operations.filter(operation => operation[0] === 'fillRect' && operation[3] <= 2).length >= 12);
