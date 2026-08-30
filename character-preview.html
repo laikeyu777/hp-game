@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>一指登塔 · 角色外观预览</title>
+  <style>
+    :root{color-scheme:dark;--ink:#07100d;--panel:#101b17;--panel-2:#16241f;--line:#2e473b;--muted:#9aada1;--text:#f5eed8;--ember:#f58b4a;--cyan:#66d3c2;--violet:#b68cff}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:radial-gradient(circle at 50% -20%,#20352b 0,#07100d 48%,#040806 100%);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--text)}
+    body{padding:28px 16px 40px}.shell{width:min(1120px,100%);margin:0 auto}.eyebrow{margin:0;color:var(--ember);font:700 11px ui-monospace,SFMono-Regular,monospace;letter-spacing:.16em;text-transform:uppercase}.title{margin:7px 0 6px;font-size:clamp(30px,5vw,54px);line-height:1.02}.subtitle{margin:0 0 24px;color:var(--muted);font-size:14px}.section{margin-top:28px}.section-head{display:flex;align-items:baseline;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:9px}.section-head h2{margin:0;font-size:20px}.section-head span{color:var(--muted);font:700 10px ui-monospace,monospace;letter-spacing:.12em}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:12px}.card{min-height:250px;background:linear-gradient(145deg,#17251f,#0c1512);border:1px solid var(--line);border-radius:8px;padding:12px;position:relative;overflow:hidden;box-shadow:0 16px 38px #0007}.card::after{content:"";position:absolute;inset:auto -18% -36% -18%;height:120px;background:radial-gradient(ellipse,#263f34aa,transparent 70%);pointer-events:none}.card.boss{border-color:#684b79;background:linear-gradient(145deg,#241b30,#100d17)}.card.hero{border-color:#496857}.card-top{display:flex;align-items:center;justify-content:space-between;gap:8px}.card h3{margin:8px 0 2px;font-size:16px}.card p{margin:0;color:var(--muted);font-size:12px;line-height:1.45}.badge{font:700 10px ui-monospace,monospace;padding:4px 6px;border:1px solid currentColor;border-radius:3px;color:var(--cyan)}.boss .badge{color:var(--violet)}.canvas-wrap{height:190px;margin:7px -4px 2px;display:grid;place-items:center;background:linear-gradient(180deg,#0a110f,#0d1713);border-top:1px solid #ffffff08;border-bottom:1px solid #ffffff08}.canvas-wrap canvas{width:160px;height:174px;image-rendering:pixelated;image-rendering:crisp-edges}.swatches{display:flex;gap:5px;margin-top:9px}.swatches i{display:block;width:16px;height:7px;border-radius:1px;border:1px solid #ffffff33}.footer{margin-top:30px;color:#70857a;font-size:11px;text-align:center}
+    @media(max-width:520px){body{padding:20px 12px 28px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.card{min-height:238px;padding:9px}.canvas-wrap{height:168px}.canvas-wrap canvas{width:140px;height:152px}.card h3{font-size:14px}.card p{font-size:11px}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <p class="eyebrow">ASH CORRIDOR / CHARACTER PASS</p>
+    <h1 class="title">角色外观预览</h1>
+    <p class="subtitle">三种职业 · 五章小怪 · 五个首领</p>
+    <section class="section">
+      <div class="section-head"><h2>冒险者职业</h2><span>HERO LOADOUTS</span></div>
+      <div id="heroes" class="grid"></div>
+    </section>
+    <section class="section">
+      <div class="section-head"><h2>章节小怪</h2><span>CHAPTER MINIONS</span></div>
+      <div id="minions" class="grid"></div>
+    </section>
+    <section class="section">
+      <div class="section-head"><h2>章节首领</h2><span>CHAPTER BOSSES</span></div>
+      <div id="bosses" class="grid"></div>
+    </section>
+    <p class="footer">当前页面只用于确认外观，不会修改正式存档。</p>
+  </main>
+  <script src="tower-data.js?v=1"></script>
+  <script src="pixel-art.js?v=16"></script>
+  <script>
+    const heroes=[
+      {id:'sword',name:'长剑先锋',role:'重甲 · 高容错',tone:'#f58b4a',desc:'厚重肩甲、黄铜胸甲与破损披风。'},
+      {id:'staff',name:'法杖织术师',role:'范围 · 远程',tone:'#66d3c2',desc:'法袍、水晶法杖与青紫符文。'},
+      {id:'crossbow',name:'弩手游猎者',role:'攻速 · 暴击',tone:'#8ab4ff',desc:'轻型护甲、机械弩与备用弩箭。'},
+    ];
+    const chapters=TowerData.chapters;
+    const canvasFor=(model,kind)=>{const canvas=document.createElement('canvas');canvas.width=160;canvas.height=174;const ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=false;ctx.fillStyle='#0b1310';ctx.fillRect(0,0,160,174);ctx.strokeStyle='#20372d';ctx.lineWidth=1;for(let x=10;x<160;x+=20){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,174);ctx.stroke()}for(let y=14;y<174;y+=20){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(160,y);ctx.stroke()}if(kind==='hero')PixelArt.drawHero(ctx,{...model,x:80,y:143,scale:2,frame:1,pose:'idle'});else PixelArt.drawEnemy(ctx,{...model,x:80,y:105,scale:model.boss?2:2,frame:1,bossPhase:2});return canvas};
+    const card=(item,type,index)=>{const article=document.createElement('article');article.className='card '+(type==='boss'?'boss ':'')+(type==='hero'?'hero':'');article.style.setProperty('--accent',item.tone||'#b68cff');article.innerHTML='<div class="card-top"><span class="badge">'+(item.role||item.chapter||'首领')+'</span><span class="eyebrow">0'+(index+1)+'</span></div><h3>'+item.name+'</h3><p>'+item.desc+'</p><div class="canvas-wrap"></div><div class="swatches">'+(item.swatches||['#151a18',item.tone||'#b68cff','#d8b071']).map(c=>'<i style="background:'+c+'"></i>').join('')+'</div>';article.querySelector('.canvas-wrap').appendChild(canvasFor(item,type));return article};
+    heroes.forEach((hero,i)=>document.querySelector('#heroes').appendChild(card({...hero,swatches:hero.id==='sword'?['#31584c','#b78a43','#793a36']:hero.id==='staff'?['#334d66','#66d3c2','#b68cff']:['#324c58','#8ab4ff','#c6b178']},'hero',i)));
+    chapters.forEach((chapter,i)=>{const enemy=chapter.enemies[1]||chapter.enemies[0];document.querySelector('#minions').appendChild(card({name:enemy.name,role:chapter.name,kind:enemy.kind,desc:'章节专属轮廓、核心与武器层。',tone:chapter.color,swatches:[chapter.color,'#d8b071','#211817']},'enemy',i));const boss=chapter.boss;document.querySelector('#bosses').appendChild(card({name:boss.name,role:chapter.name,kind:boss.kind,boss:true,desc:'专属冠饰、肩甲、核心与攻击姿态。',tone:chapter.color,swatches:[chapter.color,'#d8b071','#1e1722']},'boss',i))});
+  </script>
+</body>
+</html>
