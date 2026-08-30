@@ -41,3 +41,76 @@ html{background:#030605}body{background:#030605;color:var(--ink)}
 .ascension-btn{width:100%;margin:0 0 10px;flex:none;color:#caa7ff;border-color:#5f4580}.ascension-btn:disabled{opacity:.65}
 .menu-actions{flex-wrap:wrap}.menu-actions .ghost-btn{min-width:calc(33.333% - 7px);padding-inline:10px}.achievement-list{display:grid;gap:9px}.achievement-item{display:grid;grid-template-columns:36px 1fr auto;gap:11px;align-items:center;padding:13px;border:1px solid #30463c;border-radius:8px;background:#101a16}.achievement-item .achievement-mark{width:36px;height:36px;display:grid;place-items:center;border-radius:7px;background:#17251f;color:#65756e}.achievement-item h3{font-size:13px;margin:0}.achievement-item p{font-size:10px;line-height:1.4;color:var(--muted);margin:4px 0 0}.achievement-item b{font-size:10px;color:var(--orange)}.achievement-item.unlocked{border-color:#785b38}.achievement-item.unlocked .achievement-mark{background:#392819;color:#f3c95a}
 @keyframes skill-ready-pulse{0%,100%{box-shadow:0 10px 24px #0006,0 0 0 #66d3c200}50%{box-shadow:0 10px 24px #0006,0 0 24px #66d3c288}}@keyframes low-health-alert{0%,100%{box-shadow:0 10px 26px #0008,0 0 18px #e7686455}50%{box-shadow:0 10px 26px #0008,0 0 30px #e76864aa}}#battle-screen.low-health .arena-wrap{animation:low-health-alert 1.2s ease-in-out infinite}#battle-screen.low-health #hp-bar{background:linear-gradient(90deg,#ff6c5f,#d33c4b);box-shadow:0 0 14px #e7686488}.skill-btn.ready-pulse:not(:disabled){animation:skill-ready-pulse 1.3s ease-in-out infinite}
+
+/* Ash-dashboard visual pass: stronger hierarchy with the existing pixel-tower palette. */
+:root{--ink:#070b0a;--panel-deep:#0d1613;--panel-raised:#16231e;--line-soft:#334b40;--text-strong:#fff7e4;--muted-strong:#b3c4b9;--copper:#e89a5f}
+body{background:var(--ink)}
+.app-shell{background:linear-gradient(165deg,#102019 0%,#09110e 42%,#060908 100%);box-shadow:0 0 0 1px #22372e,0 24px 80px #0009}
+.screen{padding-left:18px;padding-right:18px}
+.menu-screen{padding-top:28px}
+.menu-screen .brand-mark{opacity:.9}
+.menu-screen h1{max-width:330px;font-size:44px;line-height:1.02;letter-spacing:-.04em;margin:48px 0 12px;color:var(--text-strong);text-wrap:balance}
+.menu-screen h1 em{color:var(--copper);text-shadow:0 0 22px #e89a5f33}
+.tagline{color:var(--muted-strong);font-size:13px;letter-spacing:.02em}
+.weapon-picker{gap:7px;margin-top:30px;padding:3px 1px 6px}
+.weapon-choice{min-width:0;min-height:70px;padding:11px 10px;background:linear-gradient(150deg,#182821,#101a16);border-color:#2d453a;box-shadow:inset 0 1px #ffffff08;transition:transform .16s ease,border-color .16s ease,background .16s ease}
+.weapon-choice strong{font-size:13px;color:var(--text-strong)}
+.weapon-choice small{color:var(--muted-strong);line-height:1.35}
+.weapon-choice.active{background:linear-gradient(150deg,#3a2b20,#1b241c);border-color:var(--copper);box-shadow:inset 0 -3px var(--copper),0 8px 20px #0004}
+.weapon-choice:not(.locked):active{transform:translateY(1px)}
+.skill-picker{margin-top:16px;gap:8px}
+.skill-picker-label{color:var(--muted-strong);font-size:10px;letter-spacing:.16em;text-transform:uppercase}
+.skill-choice{min-height:68px;background:#101b17;border-color:#2d453a;line-height:1.25}
+.skill-choice strong{color:var(--text-strong);font-size:12px}
+.skill-choice small{color:var(--muted-strong)}
+.skill-choice.active{background:linear-gradient(145deg,#153c35,#11251f);border-color:var(--cyan);box-shadow:inset 0 -3px var(--cyan),0 8px 20px #0004}
+.menu-stats{width:100%;gap:0;margin:26px 0 22px;padding:14px 4px;border:1px solid #2b4338;border-radius:10px;background:#0b1511;box-shadow:inset 0 1px #ffffff08}
+.menu-stats>div{flex:1;padding:0 14px;border-right:1px solid #2b4338}
+.menu-stats>div:last-child{border-right:0}
+.menu-stats strong{font-size:26px;color:var(--text-strong)}
+.menu-stats small{color:var(--muted-strong);font-size:10px;letter-spacing:.04em}
+.ascension-btn{margin-bottom:8px;border-color:#6d518e;background:#171324;color:#d6bdff}
+.menu-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}
+.menu-actions .ghost-btn{min-width:0;min-height:46px;padding:0 6px;font-size:12px;background:#111d18;border-color:#2c4439;color:var(--muted-strong)}
+.menu-actions .ghost-btn:active{border-color:var(--cyan);color:var(--text-strong)}
+.primary-btn{min-height:56px;border-radius:10px;background:linear-gradient(135deg,#f0a267,#d87949);box-shadow:0 12px 28px #d8794938, inset 0 1px #fff5}
+.save-note{margin-top:14px;color:#80958a}
+.topbar{min-height:44px}
+.topbar h2{color:var(--text-strong);font-size:21px}
+.icon-btn{background:#101a16;border-color:#355044;color:var(--muted-strong)}
+.floor-chip,.essence-chip{background:#0c1512;border-color:#355044;color:var(--muted-strong)}
+.route-intro,.section-copy{color:var(--muted-strong);margin-top:30px}
+.route-list{gap:10px;margin-top:22px}
+.route-card{min-height:108px;padding:16px 17px;background:linear-gradient(135deg,#17271f,#0f1814);border-color:#30483d;box-shadow:0 8px 18px #0003}
+.route-card h3{font-size:17px;color:var(--text-strong)}
+.route-card p{color:var(--muted-strong);line-height:1.45}
+.route-card .route-meta{font-weight:700;letter-spacing:.04em}
+.route-card .route-icon{filter:drop-shadow(0 0 8px color-mix(in srgb,var(--route) 55%,transparent))}
+.status-row{gap:6px;margin-top:14px}
+.pill{border-radius:7px;padding:6px 8px;background:#15332b;border-color:#35695a;color:#a6f0df}
+.pill.muted{background:#121c18;border-color:#30453b;color:var(--muted-strong)}
+.boss-mechanic-pill{background:#321915;border-color:#9b4c3d;color:#ffc08e}
+.arena-wrap{border-radius:10px;border-color:#3b574a;box-shadow:0 14px 30px #0008,inset 0 0 0 1px #ffffff0b}
+.combat-log{height:32px;padding:9px 4px;color:var(--muted-strong);border-bottom-color:#294036}
+.player-hud{padding:13px 0}
+.avatar{width:42px;height:42px;border-radius:9px;background:#294137;border-color:#527568;color:var(--copper)}
+.player-name b{color:var(--text-strong)}
+.player-name span,.player-info small,.stat-mini small{color:var(--muted-strong)}
+.bar{height:9px;border-radius:4px;background:#241b19;border-color:#51332c}
+.skill-dock{left:18px;right:18px;bottom:calc(18px + env(safe-area-inset-bottom));gap:9px}
+.skill-btn{width:78px;height:78px;border-radius:11px;background:linear-gradient(145deg,#1e5146,#122b24);border-color:#5ba493;box-shadow:0 12px 24px #0007,inset 0 1px #fff2}
+.dock-btn{width:58px;height:58px;border-radius:10px;background:#14221d;border-color:#385348;color:var(--muted-strong)}
+.card-list{gap:10px;margin-top:22px}
+.reward-card{min-height:120px;padding:17px 16px;border-radius:9px;background:linear-gradient(145deg,#18261f,#101914);border-color:#334d40;box-shadow:0 8px 18px #0004}
+.reward-card h3{color:var(--text-strong);font-size:16px}
+.reward-card p{color:var(--muted-strong);line-height:1.55}
+.result-screen{padding-top:34px;padding-bottom:34px}
+.result-screen h2{color:var(--text-strong);font-size:34px}
+.result-copy{color:var(--muted-strong)}
+.result-score-panel{background:linear-gradient(145deg,#192a21,#101a15);border-color:#4c6655}
+.result-score-panel>strong{color:#fff0c9}
+.result-reward{margin:22px 0;background:#15241d;border-color:#4b6655}
+.result-actions{gap:8px}
+.result-actions .ghost-btn{background:#111d18;border-color:#334d40;color:var(--muted-strong)}
+@media(max-width:360px){.menu-screen h1{font-size:40px}.menu-actions .ghost-btn{font-size:11px}.weapon-choice small{font-size:9px}}
+@media(prefers-reduced-motion:reduce){.skill-btn.ready-pulse:not(:disabled),#battle-screen.low-health .arena-wrap{animation:none}}
