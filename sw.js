@@ -1,5 +1,5 @@
 const CACHE='ash-corridor-v29';
-const ASSETS=['./','./index.html','./styles.css?v=11','./challenge-system.js?v=1','./combat-logic.js?v=15','./room-logic.js?v=1','./tower-data.js?v=1','./build-system.js?v=1','./skill-progression.js?v=1','./boss-mechanics.js?v=1','./ascension.js?v=1','./achievements.js?v=1','./arena-backgrounds.js?v=1','./pixel-art.js?v=14','./combat-visual-state.js?v=13','./share-adapter.js?v=1','./reward-adapter.js?v=1','./result-flow.js?v=1','./tutorial.js?v=1','./game.js?v=18','./manifest.json'];
+const ASSETS=['./','./index.html','./styles.css?v=11','./challenge-system.js?v=1','./combat-logic.js?v=15','./room-logic.js?v=1','./tower-data.js?v=1','./build-system.js?v=1','./skill-progression.js?v=1','./boss-mechanics.js?v=1','./ascension.js?v=1','./achievements.js?v=1','./arena-backgrounds.js?v=1','./pixel-art.js?v=14','./combat-visual-state.js?v=13','./share-adapter.js?v=1','./reward-adapter.js?v=1','./result-flow.js?v=1','./tutorial.js?v=1','./save-guard.js?v=1','./game.js?v=18','./manifest.json'];
 
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
