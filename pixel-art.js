@@ -50,6 +50,14 @@
     [5,34,3,2,'detail'], [24,34,3,2,'detail'], [11,41,3,2,'detail'],
     [20,41,3,2,'detail'], [27,21,3,2,'detail'],
   ];
+  const HERO_FINE_PARTS = [
+    [9,11,1,1,'white'],[11,11,1,1,'outline'],[16,11,1,1,'white'],[18,11,1,1,'outline'],
+    [7,18,1,1,'detail'],[10,18,1,1,'detail'],[21,18,1,1,'detail'],[24,18,1,1,'detail'],
+    [12,22,1,1,'brass'],[14,22,1,1,'detail'],[17,22,1,1,'detail'],[19,22,1,1,'brass'],
+    [9,31,1,1,'armorShadow'],[12,31,1,1,'detail'],[15,31,1,1,'armorShadow'],[18,31,1,1,'detail'],[21,31,1,1,'armorShadow'],
+    [10,37,1,1,'detail'],[13,37,1,1,'trousers'],[19,37,1,1,'trousers'],[22,37,1,1,'detail'],
+    [10,43,1,1,'white'],[13,43,1,1,'boot'],[20,43,1,1,'boot'],[23,43,1,1,'white'],
+  ];
   const HERO_ROLE_PALETTES = {
     sword: { heavyArmor:'#496f5d', heavyTrim:'#d6a46a', armor:'#496f5d', armorShadow:'#203c32', cloak:'#6e3538', cloakDark:'#3e2228', brass:'#d6a46a' },
     staff: { robe:'#244c73', robeLight:'#70b8d4', crystal:'#66f0dc', rune:'#c28cff', armor:'#244c73', armorShadow:'#172f4d', cloak:'#6550a0', cloakDark:'#34285e', trousers:'#1b263d', brass:'#8cc9e7', hairLight:'#dff8ff' },
@@ -85,6 +93,7 @@
     const breathing = model.pose === 'attack' || model.reducedMotion ? 0 : (frame >= 2 ? 1 : 0);
     drawParts(ctx, HERO_PARTS, x, y, scale, palette, breathing);
     drawParts(ctx, HERO_DETAIL_PARTS, x, y, scale, palette, breathing);
+    drawParts(ctx, HERO_FINE_PARTS, x, y, scale, palette, breathing);
     drawParts(ctx, HERO_ROLE_PARTS[weapon], x, y, scale, palette, breathing);
     if (!model.reducedMotion && frame >= 2) {
       drawParts(ctx, [[0,31,3,10,'cloak'],[2,39,5,3,'cloakDark']], x, y, scale, palette, 0, -1);
@@ -204,6 +213,11 @@
     guard: [[9,8,3,2,'detail'],[22,8,3,2,'detail'],[10,19,2,2,'detail'],[23,19,2,2,'detail'],[14,30,2,2,'detail'],[20,30,2,2,'detail']],
     boss: [[8,7,4,2,'detail'],[24,7,4,2,'detail'],[10,18,3,2,'detail'],[23,18,3,2,'detail'],[12,32,3,2,'detail'],[21,32,3,2,'detail'],[14,39,8,2,'detail']],
   };
+  const ENEMY_FINE_PARTS = {
+    servant: [[10,10,1,1,'eye'],[13,10,1,1,'detail'],[21,10,1,1,'eye'],[24,10,1,1,'detail'],[12,24,1,1,'core'],[16,24,1,1,'body'],[20,24,1,1,'core'],[10,37,1,1,'body'],[22,37,1,1,'body']],
+    hound: [[6,18,1,1,'eye'],[11,18,1,1,'mane'],[25,17,1,1,'eye'],[29,17,1,1,'detail'],[8,27,1,1,'body'],[16,27,1,1,'bodyDark'],[23,28,1,1,'body'],[4,29,1,1,'claw'],[28,28,1,1,'claw']],
+    guard: [[9,12,1,1,'eye'],[13,12,1,1,'brass'],[20,12,1,1,'eye'],[24,12,1,1,'brass'],[12,22,1,1,'brass'],[15,22,1,1,'armor'],[19,22,1,1,'brass'],[22,22,1,1,'armor'],[7,31,1,1,'brass'],[25,31,1,1,'brass']],
+  };
   const THEMED_ENEMY_PARTS = {
     'ice-wraith': [[2,8,4,3,'core'],[0,12,5,15,'body'],[31,12,5,15,'body'],[3,27,4,8,'core'],[29,27,4,8,'core'],[8,40,4,6,'bodyDark'],[24,40,4,6,'bodyDark']],
     'frost-wolf': [[1,13,4,3,'mane'],[27,11,4,3,'core']],
@@ -253,6 +267,13 @@
       [51,13,5,4,'eye'],[57,17,4,4,'eye'],[44,18,13,7,'rift'],[25,18,9,7,'rift'],[30,20,7,5,'ember'],
     ],
   };
+  const BOSS_FINE_PARTS = {
+    'furnace-lord': [[17,14,1,1,'ember'],[22,14,1,1,'ember'],[29,16,1,1,'detail'],[35,15,1,1,'ember'],[42,18,1,1,'detail'],[50,21,1,1,'ember'],[24,25,1,1,'ember'],[28,27,1,1,'ember'],[33,24,1,1,'detail'],[38,28,1,1,'ember'],[46,27,1,1,'detail'],[56,20,1,1,'ember'],[9,22,1,1,'eye'],[15,34,1,1,'detail'],[21,37,1,1,'ember'],[41,36,1,1,'detail'],[47,34,1,1,'ember']],
+    'frost-queen': [[18,17,1,1,'rift'],[23,16,1,1,'detail'],[30,18,1,1,'rift'],[36,17,1,1,'detail'],[42,15,1,1,'rift'],[48,12,1,1,'detail'],[53,17,1,1,'rift'],[8,19,1,1,'eye'],[14,24,1,1,'rift'],[20,26,1,1,'detail'],[27,25,1,1,'rift'],[34,27,1,1,'detail'],[43,29,1,1,'rift'],[50,28,1,1,'detail'],[58,27,1,1,'rift']],
+    'root-mother': [[18,16,1,1,'detail'],[23,18,1,1,'rift'],[29,16,1,1,'detail'],[36,19,1,1,'rift'],[43,17,1,1,'detail'],[49,20,1,1,'rift'],[8,12,1,1,'rift'],[14,10,1,1,'detail'],[22,7,1,1,'rift'],[32,8,1,1,'detail'],[42,7,1,1,'rift'],[51,12,1,1,'detail'],[20,28,1,1,'rift'],[26,31,1,1,'detail'],[35,29,1,1,'rift'],[44,32,1,1,'detail'],[55,30,1,1,'rift']],
+    'sky-executioner': [[19,17,1,1,'detail'],[25,18,1,1,'rift'],[32,17,1,1,'detail'],[40,16,1,1,'rift'],[47,13,1,1,'detail'],[56,12,1,1,'rift'],[4,9,1,1,'ember'],[10,11,1,1,'rift'],[17,8,1,1,'detail'],[45,8,1,1,'rift'],[53,7,1,1,'detail'],[62,10,1,1,'ember'],[27,24,1,1,'rift'],[33,26,1,1,'detail'],[41,24,1,1,'rift'],[49,21,1,1,'detail'],[59,20,1,1,'rift']],
+    'void-pioneer': [[10,19,1,1,'rift'],[16,18,1,1,'detail'],[23,16,1,1,'rift'],[29,15,1,1,'detail'],[37,17,1,1,'rift'],[44,16,1,1,'detail'],[52,14,1,1,'rift'],[59,17,1,1,'detail'],[7,24,1,1,'eye'],[14,25,1,1,'rift'],[21,28,1,1,'detail'],[29,25,1,1,'rift'],[36,27,1,1,'detail'],[45,25,1,1,'rift'],[54,27,1,1,'detail'],[61,23,1,1,'rift'],[19,40,1,1,'rift'],[33,39,1,1,'ember'],[49,40,1,1,'rift']],
+  };
 
   const themedPalettes = {
     'ice-wraith': { outline:'#17232b', body:'#547487', bodyDark:'#2b414d', eye:'#b8f1ff', core:'#80d8ff', weapon:'#dff8ff' },
@@ -292,6 +313,7 @@
     const bob = model.reducedMotion ? 0 : ((model.frame || 0) % 4 === 2 ? -1 : 0);
     if (isBoss && BOSS_BEAST_PARTS[kind]) {
       drawParts(ctx, BOSS_BEAST_PARTS[kind], model.x - 32 * scale, model.y - 24 * scale, scale, palette, bob);
+      drawParts(ctx, BOSS_FINE_PARTS[kind], model.x - 32 * scale, model.y - 24 * scale, scale, palette, bob);
       if (model.bossPhase === 2) {
         const pulse = 7 + ((model.frame || 0) % 4) * 2;
         ctx.strokeStyle = palette.rift || '#f58b4a'; ctx.lineWidth = 2;
@@ -303,6 +325,7 @@
     const detailKind = ENEMY_DETAIL_PARTS[kind] ? kind : (isBoss ? 'boss' : (kind === 'hound' ? 'hound' : 'guard'));
     drawParts(ctx, ENEMY_DETAIL_PARTS[detailKind], model.x - width * scale / 2, model.y - 24 * scale, scale, palette, bob);
     if (THEMED_ENEMY_PARTS[kind]) drawParts(ctx, THEMED_ENEMY_PARTS[kind], model.x - width * scale / 2, model.y - 24 * scale, scale, palette, bob);
+    drawParts(ctx, ENEMY_FINE_PARTS[detailKind] || ENEMY_FINE_PARTS.guard, model.x - width * scale / 2, model.y - 24 * scale, scale, palette, bob);
     if (isBoss && BOSS_ROLE_PARTS[kind]) drawParts(ctx, BOSS_ROLE_PARTS[kind], model.x - width * scale / 2, model.y - 24 * scale, scale, palette, bob);
     if (isBoss && model.bossPhase === 2) {
       const pulse = 5 + ((model.frame || 0) % 4) * 2; ctx.strokeStyle = '#f58b4a'; ctx.lineWidth = 2; ctx.strokeRect(model.x - pulse, model.y - pulse, pulse * 2, pulse * 2);

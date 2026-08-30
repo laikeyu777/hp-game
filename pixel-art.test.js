@@ -68,6 +68,9 @@ const heroGeometry = ['sword', 'staff', 'crossbow'].map(weapon => {
   return ctx.operations.filter(operation => operation[0] === 'fillRect').length;
 });
 assert.equal(new Set(heroGeometry).size, 3);
+const fineHero = recordingContext();
+PixelArt.drawHero(fineHero, { x: 80, y: 250, scale: 2, weapon: 'staff', frame: 0, pose: 'idle' });
+assert.ok(fineHero.operations.filter(operation => operation[0] === 'fillRect' && operation[3] <= 2).length >= 18);
 
 const fallback = recordingContext();
 PixelArt.drawHero(fallback, { x: 80, y: 250, scale: 2, weapon: 'unknown', frame: 0 });
@@ -139,6 +142,9 @@ const bossSignatures = bossKinds.map(kind => {
   return JSON.stringify(ctx.operations);
 });
 assert.equal(new Set(bossSignatures).size, bossKinds.length);
+const fineBoss = recordingContext();
+PixelArt.drawEnemy(fineBoss, { kind: 'void-pioneer', x: 200, y: 150, scale: 2, frame: 0, bossPhase: 1 });
+assert.ok(fineBoss.operations.filter(operation => operation[0] === 'fillRect' && operation[3] <= 2).length >= 12);
 const enemyGeometry = ['servant', 'ice-wraith', 'thorn-bug', 'thunder-bird', 'void-leech'].map(kind => {
   const ctx = recordingContext();
   PixelArt.drawEnemy(ctx, { kind, x: 200, y: 150, scale: 1, frame: 0, bossPhase: 1 });
