@@ -1,3 +1,4 @@
+# Deploy the static game after GitHub Pages is enabled for this repository.
 name: Deploy game to GitHub Pages
 
 on:
