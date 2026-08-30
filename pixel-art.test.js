@@ -62,6 +62,12 @@ Object.entries(heroRoleColors).forEach(([weapon, color]) => {
   PixelArt.drawHero(ctx, { x: 80, y: 250, scale: 2, weapon, frame: 0, pose: 'idle' });
   assert.ok(ctx.operations.some(operation => operation.includes(color)));
 });
+const heroGeometry = ['sword', 'staff', 'crossbow'].map(weapon => {
+  const ctx = recordingContext();
+  PixelArt.drawHero(ctx, { x: 80, y: 250, scale: 2, weapon, frame: 0, pose: 'idle' });
+  return ctx.operations.filter(operation => operation[0] === 'fillRect').length;
+});
+assert.equal(new Set(heroGeometry).size, 3);
 
 const fallback = recordingContext();
 PixelArt.drawHero(fallback, { x: 80, y: 250, scale: 2, weapon: 'unknown', frame: 0 });
@@ -115,6 +121,12 @@ const bossSignatures = bossKinds.map(kind => {
   return JSON.stringify(ctx.operations);
 });
 assert.equal(new Set(bossSignatures).size, bossKinds.length);
+const enemyGeometry = ['servant', 'ice-wraith', 'thorn-bug', 'thunder-bird', 'void-leech'].map(kind => {
+  const ctx = recordingContext();
+  PixelArt.drawEnemy(ctx, { kind, x: 200, y: 150, scale: 1, frame: 0, bossPhase: 1 });
+  return ctx.operations.filter(operation => operation[0] === 'fillRect').length;
+});
+assert.equal(new Set(enemyGeometry).size, enemyGeometry.length);
 
 const unknownEnemy = recordingContext();
 PixelArt.drawEnemy(unknownEnemy, { kind: 'unknown', x: 0, y: 0, scale: 2, frame: 0 });
