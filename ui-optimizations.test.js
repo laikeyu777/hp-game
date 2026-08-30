@@ -16,5 +16,5 @@ assert.ok(game.includes("save.settings.sound"));
 assert.ok(game.includes("save.settings.vibration"));
 assert.ok(html.includes('game.js?v=21'));
 assert.ok(html.includes('shop-screen'));
-assert.ok(sw.includes('ash-corridor-v38'));
+assert.ok(sw.includes('ash-corridor-v39'));
 assert.ok(sw.includes('tutorial.js?v=1'));

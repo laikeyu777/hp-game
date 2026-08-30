@@ -226,6 +226,34 @@
     'void-pioneer': [[5,1,5,5,'rift'],[26,1,5,5,'rift'],[2,15,7,5,'rift'],[29,15,7,5,'rift'],[13,20,10,10,'rift'],[9,39,4,5,'rift'],[23,39,4,5,'rift'],[0,9,7,5,'rift'],[29,9,7,5,'rift'],[2,29,5,11,'rift'],[29,29,5,11,'rift']],
   };
 
+  const BOSS_BEAST_PARTS = {
+    'furnace-lord': [
+      [12,14,40,18,'armor'],[5,10,15,14,'armor'],[0,17,11,9,'armorDark'],[17,7,11,9,'armorDark'],[34,6,12,10,'armorDark'],
+      [14,30,8,14,'armorDark'],[39,30,8,14,'armorDark'],[51,18,15,6,'armor'],[59,15,8,6,'armorDark'],
+      [20,19,12,10,'ember'],[5,7,4,7,'ember'],[14,5,4,8,'ember'],[46,5,4,8,'ember'],[54,8,5,5,'ember'],[8,16,3,3,'eye'],
+    ],
+    'frost-queen': [
+      [18,14,29,17,'armor'],[8,9,15,13,'armor'],[3,14,9,7,'armorDark'],[13,5,10,19,'armorDark'],[0,8,18,7,'rift'],[43,8,19,7,'rift'],
+      [1,4,5,7,'rift'],[7,1,5,8,'rift'],[49,2,5,8,'rift'],[56,5,5,7,'rift'],[42,25,18,5,'armorDark'],[55,24,11,4,'rift'],
+      [25,19,12,9,'rift'],[11,12,3,3,'eye'],[39,7,4,5,'rift'],[44,5,4,5,'rift'],
+    ],
+    'root-mother': [
+      [16,15,34,21,'armor'],[12,8,42,10,'armorDark'],[7,4,10,13,'rift'],[20,0,9,12,'rift'],[35,1,9,11,'rift'],[49,5,10,12,'rift'],
+      [0,24,13,7,'armorDark'],[51,23,15,8,'armorDark'],[1,30,9,14,'armor'],[13,33,7,12,'armorDark'],[40,33,7,12,'armorDark'],[52,29,10,15,'armor'],
+      [27,20,12,11,'rift'],[30,24,7,7,'ember'],[7,20,5,4,'eye'],[54,18,5,4,'eye'],
+    ],
+    'sky-executioner': [
+      [18,16,29,16,'armor'],[39,9,16,14,'armor'],[53,13,11,7,'armorDark'],[61,11,8,4,'rift'],[0,4,22,13,'rift'],[42,3,24,14,'rift'],
+      [1,14,17,7,'armorDark'],[47,15,17,7,'armorDark'],[23,30,7,12,'armorDark'],[38,30,7,12,'armorDark'],[19,39,9,4,'rift'],[40,39,9,4,'rift'],
+      [47,12,4,4,'eye'],[55,16,7,3,'rift'],[25,19,9,7,'rift'],[5,2,5,5,'ember'],[58,2,5,5,'ember'],
+    ],
+    'void-pioneer': [
+      [7,16,16,13,'armorDark'],[20,12,19,16,'armor'],[36,14,20,14,'armorDark'],[48,8,16,16,'armor'],[0,20,10,5,'rift'],[58,20,11,5,'rift'],
+      [4,29,14,4,'rift'],[16,31,10,4,'rift'],[38,30,11,4,'rift'],[51,29,14,4,'rift'],[11,36,5,10,'rift'],[25,38,5,9,'rift'],[43,37,5,10,'rift'],[56,35,5,11,'rift'],
+      [51,13,5,4,'eye'],[57,17,4,4,'eye'],[44,18,13,7,'rift'],[25,18,9,7,'rift'],[30,20,7,5,'ember'],
+    ],
+  };
+
   const themedPalettes = {
     'ice-wraith': { outline:'#17232b', body:'#547487', bodyDark:'#2b414d', eye:'#b8f1ff', core:'#80d8ff', weapon:'#dff8ff' },
     'frost-wolf': { outline:'#182733', body:'#547b91', bodyDark:'#2c4b5c', mane:'#9ddff2', eye:'#fff0c7', claw:'#c9f2ff' },
@@ -262,6 +290,15 @@
     if (!palette.detail) palette.detail = '#d8b071';
     if (isBoss && model.bossPhase === 2) palette.rift = '#f58b4a';
     const bob = model.reducedMotion ? 0 : ((model.frame || 0) % 4 === 2 ? -1 : 0);
+    if (isBoss && BOSS_BEAST_PARTS[kind]) {
+      drawParts(ctx, BOSS_BEAST_PARTS[kind], model.x - 32 * scale, model.y - 24 * scale, scale, palette, bob);
+      if (model.bossPhase === 2) {
+        const pulse = 7 + ((model.frame || 0) % 4) * 2;
+        ctx.strokeStyle = palette.rift || '#f58b4a'; ctx.lineWidth = 2;
+        ctx.strokeRect(model.x - pulse, model.y - pulse, pulse * 2, pulse * 2);
+      }
+      return;
+    }
     drawParts(ctx, parts, model.x - width * scale / 2, model.y - 24 * scale, scale, palette, bob);
     const detailKind = ENEMY_DETAIL_PARTS[kind] ? kind : (isBoss ? 'boss' : (kind === 'hound' ? 'hound' : 'guard'));
     drawParts(ctx, ENEMY_DETAIL_PARTS[detailKind], model.x - width * scale / 2, model.y - 24 * scale, scale, palette, bob);
