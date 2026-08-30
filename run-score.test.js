@@ -1,5 +1,6 @@
 const assert = require('assert');
 const RunScore = require('./run-score.js');
+const { test } = require('node:test');
 
 test('normal and daily runs share the same positive score calculation', () => {
   const result = RunScore.summarize({
