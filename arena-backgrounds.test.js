@@ -18,6 +18,7 @@ const signatures = ['ember','frost','garden','storm','void'].map(chapterId => {
   const ctx = context();
   ArenaBackgrounds.draw(ctx,{chapterId,now:1250,boss:false,reducedMotion:false,width:360,height:390});
   assert.ok(ctx.operations.length > 18);
+  assert.ok(ctx.operations.some(operation => operation.includes('#d6a46a')));
   return JSON.stringify(ctx.operations);
 });
 assert.equal(new Set(signatures).size, 5);

@@ -47,6 +47,7 @@ const heroSignatures = ['sword', 'staff', 'crossbow'].map(weapon => {
   PixelArt.drawHero(ctx, { x: 80, y: 250, scale: 2, weapon, frame: 0, pose: 'idle' });
   assert.equal(ctx.imageSmoothingEnabled, false);
   assert.ok(ctx.operations.filter(operation => operation[0] === 'fillRect').length >= 30);
+  assert.ok(ctx.operations.some(operation => operation.includes('#d8b071')));
   return JSON.stringify(ctx.operations);
 });
 assert.equal(new Set(heroSignatures).size, 3);
@@ -85,6 +86,7 @@ const enemySignatures = ['servant', 'hound', 'guard', 'boss'].map(kind => {
   const ctx = recordingContext();
   PixelArt.drawEnemy(ctx, { kind, x: 200, y: 150, scale: 2, frame: 0, bossPhase: kind === 'boss' ? 2 : 1 });
   assert.ok(ctx.operations.filter(operation => operation[0] === 'fillRect').length >= 12);
+  assert.ok(ctx.operations.some(operation => operation.includes('#d8b071')));
   return JSON.stringify(ctx.operations);
 });
 assert.equal(new Set(enemySignatures).size, 4);
