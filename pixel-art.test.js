@@ -53,9 +53,9 @@ const heroSignatures = ['sword', 'staff', 'crossbow'].map(weapon => {
 assert.equal(new Set(heroSignatures).size, 3);
 
 const heroRoleColors = {
-  sword: '#b78a43',
-  staff: '#5d8ca6',
-  crossbow: '#8ab4ff',
+  sword: '#496f5d',
+  staff: '#244c73',
+  crossbow: '#1f6570',
 };
 Object.entries(heroRoleColors).forEach(([weapon, color]) => {
   const ctx = recordingContext();
@@ -77,6 +77,17 @@ for (const weapon of ['sword', 'staff', 'crossbow']) {
   const ctx = recordingContext();
   PixelArt.drawBasicAttack(ctx, { weapon, from: { x: 82, y: 252 }, to: { x: 240, y: 125 }, startTime: 0, duration: 420 }, 210);
   assert.ok(ctx.operations.length > 3);
+}
+
+const roleColors = {
+  sword: '#496f5d',
+  staff: '#244c73',
+  crossbow: '#1f6570',
+};
+for (const [weapon, color] of Object.entries(roleColors)) {
+  const ctx = recordingContext();
+  PixelArt.drawHero(ctx, { x: 80, y: 250, scale: 2, weapon, frame: 0, pose: 'idle' });
+  assert.ok(ctx.operations.some(operation => operation.includes(color)));
 }
 
 for (const now of [50, 180, 390, 550, 670]) {
@@ -113,6 +124,13 @@ for (const kind of ['ice-wraith', 'frost-wolf', 'cold-guard', 'furnace-lord', 'f
   PixelArt.drawEnemy(ctx, { kind, x: 200, y: 150, scale: 1, frame: 0, bossPhase: 1 });
   assert.ok(ctx.operations.filter(operation => operation[0] === 'fillRect').length >= 12);
 }
+
+const themedSignatures = ['ice-wraith', 'thorn-bug', 'rot-priest', 'thunder-bird', 'void-leech', 'furnace-lord', 'frost-queen', 'root-mother', 'sky-executioner', 'void-pioneer'].map(kind => {
+  const ctx = recordingContext();
+  PixelArt.drawEnemy(ctx, { kind, x: 200, y: 150, scale: 1, frame: 0, bossPhase: 1 });
+  return JSON.stringify(ctx.operations);
+});
+assert.equal(new Set(themedSignatures).size, themedSignatures.length);
 
 const bossKinds = ['furnace-lord', 'frost-queen', 'root-mother', 'sky-executioner', 'void-pioneer'];
 const bossSignatures = bossKinds.map(kind => {

@@ -51,14 +51,14 @@
     [20,41,3,2,'detail'], [27,21,3,2,'detail'],
   ];
   const HERO_ROLE_PALETTES = {
-    sword: { heavyArmor:'#496f5d', heavyTrim:'#d6a46a' },
-    staff: { robe:'#334d66', robeLight:'#5d8ca6', crystal:'#66d3c2', rune:'#b68cff' },
-    crossbow: { ranger:'#324c58', rangerLight:'#8ab4ff', metal:'#c6b178', bolt:'#fff0c7' },
+    sword: { heavyArmor:'#496f5d', heavyTrim:'#d6a46a', armor:'#496f5d', armorShadow:'#203c32', cloak:'#6e3538', cloakDark:'#3e2228', brass:'#d6a46a' },
+    staff: { robe:'#244c73', robeLight:'#70b8d4', crystal:'#66f0dc', rune:'#c28cff', armor:'#244c73', armorShadow:'#172f4d', cloak:'#6550a0', cloakDark:'#34285e', trousers:'#1b263d', brass:'#8cc9e7', hairLight:'#dff8ff' },
+    crossbow: { ranger:'#1f6570', rangerLight:'#77d6e5', metal:'#e0bd6f', bolt:'#fff0c7', armor:'#1f6570', armorShadow:'#153d47', cloak:'#2b7480', cloakDark:'#173d46', trousers:'#18343d', brass:'#e0bd6f', hairLight:'#d9e8ff' },
   };
   const HERO_ROLE_PARTS = {
-    sword: [[2,19,7,8,'heavyArmor'],[22,19,7,8,'heavyArmor'],[8,31,16,4,'heavyArmor'],[11,32,2,2,'heavyTrim'],[21,32,2,2,'heavyTrim'],[27,35,4,3,'heavyTrim'],[4,27,4,3,'heavyTrim'],[24,27,4,3,'heavyTrim']],
-    staff: [[7,28,18,10,'robe'],[5,32,4,8,'robe'],[23,32,4,8,'robe'],[9,29,3,2,'robeLight'],[20,29,3,2,'robeLight'],[27,8,7,2,'rune'],[29,7,3,3,'crystal'],[30,11,2,2,'crystal'],[6,40,4,4,'rune']],
-    crossbow: [[4,7,19,3,'ranger'],[2,10,5,8,'ranger'],[6,19,4,6,'rangerLight'],[23,29,5,5,'ranger'],[25,34,4,8,'ranger'],[27,36,5,2,'metal'],[28,23,4,2,'bolt'],[30,26,5,2,'metal'],[1,15,4,3,'rangerLight'],[24,15,5,3,'metal']],
+    sword: [[6,0,20,2,'heavyArmor'],[4,2,24,3,'heavyArmor'],[2,5,5,8,'heavyArmor'],[25,5,5,8,'heavyArmor'],[1,18,8,9,'heavyArmor'],[23,18,8,9,'heavyArmor'],[6,27,5,5,'heavyTrim'],[22,27,5,5,'heavyTrim'],[8,31,16,4,'heavyArmor'],[11,32,2,2,'heavyTrim'],[21,32,2,2,'heavyTrim'],[27,35,4,3,'heavyTrim'],[4,27,4,3,'heavyTrim'],[24,27,4,3,'heavyTrim']],
+    staff: [[8,0,16,2,'robe'],[5,2,22,3,'robe'],[3,5,4,10,'robe'],[25,5,4,10,'robe'],[6,28,20,12,'robe'],[4,33,5,10,'robe'],[23,33,5,10,'robe'],[8,39,16,6,'robe'],[9,29,3,2,'robeLight'],[20,29,3,2,'robeLight'],[27,8,7,2,'rune'],[29,7,3,3,'crystal'],[30,11,2,2,'crystal'],[6,40,4,4,'rune'],[22,40,4,4,'rune']],
+    crossbow: [[8,0,14,2,'ranger'],[4,2,7,5,'ranger'],[19,2,9,5,'ranger'],[2,6,6,8,'ranger'],[25,6,6,8,'ranger'],[1,15,5,7,'rangerLight'],[24,15,7,7,'metal'],[5,26,5,11,'ranger'],[22,26,5,11,'ranger'],[26,32,7,10,'ranger'],[0,35,5,8,'ranger'],[6,19,4,6,'rangerLight'],[23,29,5,5,'ranger'],[27,36,5,2,'metal'],[28,23,4,2,'bolt'],[30,26,5,2,'metal']],
   };
   const WEAPON_PARTS = {
     sword: [[30,18,2,22,'white'],[28,17,6,2,'brass'],[30,40,2,5,'leather'],[29,18,1,18,'hairLight']],
@@ -205,25 +205,25 @@
     boss: [[8,7,4,2,'detail'],[24,7,4,2,'detail'],[10,18,3,2,'detail'],[23,18,3,2,'detail'],[12,32,3,2,'detail'],[21,32,3,2,'detail'],[14,39,8,2,'detail']],
   };
   const THEMED_ENEMY_PARTS = {
-    'ice-wraith': [[2,8,4,3,'core']],
+    'ice-wraith': [[2,8,4,3,'core'],[0,12,5,15,'body'],[31,12,5,15,'body'],[3,27,4,8,'core'],[29,27,4,8,'core'],[8,40,4,6,'bodyDark'],[24,40,4,6,'bodyDark']],
     'frost-wolf': [[1,13,4,3,'mane'],[27,11,4,3,'core']],
-    'cold-guard': [[3,8,4,4,'brass'],[25,8,4,4,'core'],[14,33,8,2,'brass']],
-    'thorn-bug': [[2,8,4,3,'brass'],[28,8,4,3,'core'],[13,34,3,5,'spear'],[20,34,3,5,'spear']],
-    'rot-priest': [[3,8,4,3,'core'],[27,8,4,3,'weapon'],[13,34,3,5,'core'],[20,34,3,5,'core'],[15,15,6,2,'weapon']],
-    'spore-beast': [[1,13,4,3,'mane'],[28,13,4,3,'core'],[11,34,4,5,'claw'],[21,34,4,5,'claw'],[15,16,7,3,'core'],[5,24,3,4,'mane']],
-    'thunder-bird': [[1,9,6,3,'mane'],[28,9,6,3,'core'],[13,34,3,5,'claw'],[20,34,3,5,'claw'],[15,18,6,2,'core'],[7,22,3,3,'mane'],[26,22,3,3,'mane']],
-    'mag-guard': [[3,8,4,4,'brass'],[25,8,4,4,'core'],[13,34,3,5,'spear'],[20,34,3,5,'spear'],[14,16,7,2,'brass'],[7,24,3,4,'armor']],
-    'light-wraith': [[2,8,4,3,'core'],[28,8,4,3,'eye'],[12,34,4,4,'core'],[21,34,4,4,'core'],[15,16,6,2,'weapon'],[6,25,3,3,'core'],[27,25,3,3,'core'],[15,41,6,2,'weapon']],
-    'void-leech': [[1,8,5,3,'core'],[27,8,5,3,'eye'],[12,34,4,4,'core'],[21,34,4,4,'core'],[15,16,7,3,'weapon'],[6,25,4,3,'bodyDark'],[26,25,4,3,'bodyDark'],[15,41,7,2,'core'],[3,20,3,5,'core']],
-    'rift-hound': [[1,13,4,3,'mane'],[28,13,4,3,'core'],[10,34,4,4,'claw'],[22,34,4,4,'claw'],[15,16,7,3,'core'],[4,25,3,3,'mane'],[27,25,3,3,'mane'],[14,39,8,2,'core'],[0,24,3,3,'core'],[31,24,3,3,'core']],
-    'star-guard': [[3,8,4,4,'brass'],[25,8,4,4,'core'],[11,34,4,5,'spear'],[21,34,4,5,'spear'],[14,16,8,2,'brass'],[5,24,4,4,'armor'],[25,24,4,4,'armor'],[15,41,7,2,'core'],[1,14,3,5,'core'],[30,14,3,5,'core'],[15,29,6,2,'brass']],
+    'cold-guard': [[3,8,4,4,'brass'],[25,8,4,4,'core'],[14,33,8,2,'brass'],[0,20,4,8,'armor'],[32,20,4,8,'armor'],[28,4,5,3,'spear']],
+    'thorn-bug': [[2,8,4,3,'brass'],[28,8,4,3,'core'],[13,34,3,5,'spear'],[20,34,3,5,'spear'],[8,0,3,8,'brass'],[24,0,3,8,'brass'],[0,25,6,3,'spear'],[30,25,6,3,'spear'],[5,33,3,6,'brass'],[27,33,3,6,'brass']],
+    'rot-priest': [[3,8,4,3,'core'],[27,8,4,3,'weapon'],[13,34,3,5,'core'],[20,34,3,5,'core'],[15,15,6,2,'weapon'],[6,0,24,6,'bodyDark'],[3,5,5,5,'body'],[28,5,5,5,'body'],[5,31,4,10,'bodyDark'],[27,31,4,10,'bodyDark']],
+    'spore-beast': [[1,13,4,3,'mane'],[28,13,4,3,'core'],[11,34,4,5,'claw'],[21,34,4,5,'claw'],[15,16,7,3,'core'],[5,24,3,4,'mane'],[7,3,7,6,'mane'],[18,1,8,8,'mane'],[27,4,6,5,'mane'],[2,28,5,5,'claw'],[29,28,5,5,'claw']],
+    'thunder-bird': [[1,9,6,3,'mane'],[28,9,6,3,'core'],[13,34,3,5,'claw'],[20,34,3,5,'claw'],[15,18,6,2,'core'],[7,22,3,3,'mane'],[26,22,3,3,'mane'],[0,10,10,5,'mane'],[30,10,10,5,'mane'],[34,22,6,5,'claw'],[2,26,5,3,'claw']],
+    'mag-guard': [[3,8,4,4,'brass'],[25,8,4,4,'core'],[13,34,3,5,'spear'],[20,34,3,5,'spear'],[14,16,7,2,'brass'],[7,24,3,4,'armor'],[0,13,7,6,'armor'],[29,13,7,6,'armor'],[32,27,5,3,'spear']],
+    'light-wraith': [[2,8,4,3,'core'],[28,8,4,3,'eye'],[12,34,4,4,'core'],[21,34,4,4,'core'],[15,16,6,2,'weapon'],[6,25,3,3,'core'],[27,25,3,3,'core'],[15,41,6,2,'weapon'],[0,12,9,5,'core'],[27,12,9,5,'core'],[4,17,5,4,'weapon'],[27,17,5,4,'weapon']],
+    'void-leech': [[1,8,5,3,'core'],[27,8,5,3,'eye'],[12,34,4,4,'core'],[21,34,4,4,'core'],[15,16,7,3,'weapon'],[6,25,4,3,'bodyDark'],[26,25,4,3,'bodyDark'],[15,41,7,2,'core'],[3,20,3,5,'core'],[0,24,9,3,'core'],[27,24,9,3,'core'],[4,31,4,8,'bodyDark'],[28,31,4,8,'bodyDark']],
+    'rift-hound': [[1,13,4,3,'mane'],[28,13,4,3,'core'],[10,34,4,4,'claw'],[22,34,4,4,'claw'],[15,16,7,3,'core'],[4,25,3,3,'mane'],[27,25,3,3,'mane'],[14,39,8,2,'core'],[0,24,3,3,'core'],[31,24,3,3,'core'],[0,12,8,5,'mane'],[31,12,8,5,'mane']],
+    'star-guard': [[3,8,4,4,'brass'],[25,8,4,4,'core'],[11,34,4,5,'spear'],[21,34,4,5,'spear'],[14,16,8,2,'brass'],[5,24,4,4,'armor'],[25,24,4,4,'armor'],[15,41,7,2,'core'],[1,14,3,5,'core'],[30,14,3,5,'core'],[15,29,6,2,'brass'],[0,8,8,5,'armor'],[28,8,8,5,'armor'],[32,28,5,4,'spear']],
   };
   const BOSS_ROLE_PARTS = {
-    'furnace-lord': [[5,1,5,5,'ember'],[25,1,5,5,'ember'],[6,17,4,9,'ember'],[26,17,4,9,'ember'],[14,22,8,8,'ember']],
-    'frost-queen': [[10,0,4,6,'rift'],[16,0,4,5,'rift'],[22,0,4,6,'rift'],[5,18,4,8,'rift'],[27,18,4,8,'rift'],[14,22,8,3,'rift']],
-    'root-mother': [[3,3,5,7,'rift'],[28,3,5,7,'rift'],[1,16,6,4,'rift'],[29,16,6,4,'rift'],[13,21,10,8,'rift'],[8,37,4,7,'rift'],[23,37,4,7,'rift']],
-    'sky-executioner': [[6,5,6,3,'rift'],[26,5,6,3,'rift'],[0,14,8,4,'rift'],[28,14,8,4,'rift'],[14,20,8,5,'rift'],[30,29,5,3,'ember']],
-    'void-pioneer': [[5,1,5,5,'rift'],[26,1,5,5,'rift'],[2,15,7,5,'rift'],[29,15,7,5,'rift'],[13,20,10,10,'rift'],[9,39,4,5,'rift'],[23,39,4,5,'rift']],
+    'furnace-lord': [[5,1,5,5,'ember'],[25,1,5,5,'ember'],[6,17,4,9,'ember'],[26,17,4,9,'ember'],[14,22,8,8,'ember'],[0,9,8,6,'ember'],[28,9,8,6,'ember'],[2,28,6,5,'ember'],[28,28,6,5,'ember']],
+    'frost-queen': [[10,0,4,6,'rift'],[16,0,4,5,'rift'],[22,0,4,6,'rift'],[5,18,4,8,'rift'],[27,18,4,8,'rift'],[14,22,8,3,'rift'],[7,4,4,8,'rift'],[25,4,4,8,'rift'],[0,27,8,4,'rift'],[28,27,8,4,'rift']],
+    'root-mother': [[3,3,5,7,'rift'],[28,3,5,7,'rift'],[1,16,6,4,'rift'],[29,16,6,4,'rift'],[13,21,10,8,'rift'],[8,37,4,7,'rift'],[23,37,4,7,'rift'],[0,8,5,12,'rift'],[31,8,5,12,'rift'],[4,30,5,10,'rift'],[27,30,5,10,'rift']],
+    'sky-executioner': [[6,5,6,3,'rift'],[26,5,6,3,'rift'],[0,14,8,4,'rift'],[28,14,8,4,'rift'],[14,20,8,5,'rift'],[30,29,5,3,'ember'],[0,7,12,5,'rift'],[24,7,12,5,'rift'],[4,12,8,5,'rift'],[24,12,8,5,'rift']],
+    'void-pioneer': [[5,1,5,5,'rift'],[26,1,5,5,'rift'],[2,15,7,5,'rift'],[29,15,7,5,'rift'],[13,20,10,10,'rift'],[9,39,4,5,'rift'],[23,39,4,5,'rift'],[0,9,7,5,'rift'],[29,9,7,5,'rift'],[2,29,5,11,'rift'],[29,29,5,11,'rift']],
   };
 
   const themedPalettes = {

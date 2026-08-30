@@ -31,7 +31,7 @@
     <p class="footer">当前页面只用于确认外观，不会修改正式存档。</p>
   </main>
   <script src="tower-data.js?v=1"></script>
-  <script src="pixel-art.js?v=17"></script>
+  <script src="pixel-art.js?v=19"></script>
   <script>
     const heroes=[
       {id:'sword',name:'长剑先锋',role:'重甲 · 高容错',tone:'#f58b4a',desc:'厚重肩甲、黄铜胸甲与破损披风。'},
@@ -39,7 +39,7 @@
       {id:'crossbow',name:'弩手游猎者',role:'攻速 · 暴击',tone:'#8ab4ff',desc:'轻型护甲、机械弩与备用弩箭。'},
     ];
     const chapters=TowerData.chapters;
-    const canvasFor=(model,kind)=>{const canvas=document.createElement('canvas');canvas.width=160;canvas.height=174;const ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=false;ctx.fillStyle='#0b1310';ctx.fillRect(0,0,160,174);ctx.strokeStyle='#20372d';ctx.lineWidth=1;for(let x=10;x<160;x+=20){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,174);ctx.stroke()}for(let y=14;y<174;y+=20){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(160,y);ctx.stroke()}if(kind==='hero')PixelArt.drawHero(ctx,{...model,x:80,y:143,scale:2,frame:1,pose:'idle'});else PixelArt.drawEnemy(ctx,{...model,x:80,y:105,scale:model.boss?2:2,frame:1,bossPhase:2});return canvas};
+    const canvasFor=(model,kind)=>{const canvas=document.createElement('canvas');canvas.width=160;canvas.height=174;const ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=false;ctx.fillStyle='#0b1310';ctx.fillRect(0,0,160,174);ctx.strokeStyle='#20372d';ctx.lineWidth=1;for(let x=10;x<160;x+=20){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,174);ctx.stroke()}for(let y=14;y<174;y+=20){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(160,y);ctx.stroke()}if(kind==='hero')PixelArt.drawHero(ctx,{...model,weapon:model.weapon||model.id,x:80,y:143,scale:3,frame:1,pose:'idle'});else PixelArt.drawEnemy(ctx,{...model,x:80,y:105,scale:model.boss?2:2,frame:1,bossPhase:1});return canvas};
     const card=(item,type,index)=>{const article=document.createElement('article');article.className='card '+(type==='boss'?'boss ':'')+(type==='hero'?'hero':'');article.style.setProperty('--accent',item.tone||'#b68cff');article.innerHTML='<div class="card-top"><span class="badge">'+(item.role||item.chapter||'首领')+'</span><span class="eyebrow">0'+(index+1)+'</span></div><h3>'+item.name+'</h3><p>'+item.desc+'</p><div class="canvas-wrap"></div><div class="swatches">'+(item.swatches||['#151a18',item.tone||'#b68cff','#d8b071']).map(c=>'<i style="background:'+c+'"></i>').join('')+'</div>';article.querySelector('.canvas-wrap').appendChild(canvasFor(item,type));return article};
     heroes.forEach((hero,i)=>document.querySelector('#heroes').appendChild(card({...hero,swatches:hero.id==='sword'?['#31584c','#b78a43','#793a36']:hero.id==='staff'?['#334d66','#66d3c2','#b68cff']:['#324c58','#8ab4ff','#c6b178']},'hero',i)));
     chapters.forEach((chapter,i)=>{const enemy=chapter.enemies[1]||chapter.enemies[0];document.querySelector('#minions').appendChild(card({name:enemy.name,role:chapter.name,kind:enemy.kind,desc:'章节专属轮廓、核心与武器层。',tone:chapter.color,swatches:[chapter.color,'#d8b071','#211817']},'enemy',i));const boss=chapter.boss;document.querySelector('#bosses').appendChild(card({name:boss.name,role:chapter.name,kind:boss.kind,boss:true,desc:'专属冠饰、肩甲、核心与攻击姿态。',tone:chapter.color,swatches:[chapter.color,'#d8b071','#1e1722']},'boss',i))});

@@ -3,6 +3,7 @@ const fs = require('fs');
 
 const game = fs.readFileSync('./game.js', 'utf8');
 const html = fs.readFileSync('./index.html', 'utf8');
+const preview = fs.readFileSync('./character-preview.html', 'utf8');
 const serviceWorker = fs.readFileSync('./sw.js', 'utf8');
 
 assert.ok(game.includes('TowerData.getEnemyPool'));
@@ -28,12 +29,12 @@ assert.ok(game.includes('getEnemyDamage'));
 assert.ok(html.includes('skill-picker'));
 assert.ok(game.includes('PixelArt.drawEnemyAttack'));
 assert.ok(game.includes("effect.type==='enemy-attack'"));
-assert.ok(html.indexOf('pixel-art.js?v=17') < html.indexOf('combat-visual-state.js?v=13'));
+assert.ok(html.indexOf('pixel-art.js?v=19') < html.indexOf('combat-visual-state.js?v=13'));
 assert.ok(html.indexOf('combat-visual-state.js?v=13') < html.indexOf('game.js?v=21'));
-assert.ok(serviceWorker.includes("ash-corridor-v36"));
+assert.ok(serviceWorker.includes("ash-corridor-v38"));
 assert.ok(serviceWorker.includes('self.skipWaiting()'));
 assert.ok(serviceWorker.includes('self.clients.claim()'));
-assert.ok(html.includes('pixel-art.js?v=17'));
+assert.ok(html.includes('pixel-art.js?v=19'));
 assert.ok(html.includes('combat-visual-state.js?v=13'));
 assert.ok(html.includes('game.js?v=21'));
 assert.ok(html.includes('tower-data.js?v=1'));
@@ -66,3 +67,4 @@ assert.ok(serviceWorker.includes('achievements.js?v=1'));
 assert.ok(game.includes('Achievements.evaluateRun'));
 assert.ok(game.includes('renderCodex'));
 assert.ok(html.includes('codex-screen'));
+assert.ok(preview.includes('weapon:model.weapon||model.id'));
