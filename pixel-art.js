@@ -50,6 +50,16 @@
     [5,34,3,2,'detail'], [24,34,3,2,'detail'], [11,41,3,2,'detail'],
     [20,41,3,2,'detail'], [27,21,3,2,'detail'],
   ];
+  const HERO_ROLE_PALETTES = {
+    sword: { heavyArmor:'#496f5d', heavyTrim:'#d6a46a' },
+    staff: { robe:'#334d66', robeLight:'#5d8ca6', crystal:'#66d3c2', rune:'#b68cff' },
+    crossbow: { ranger:'#324c58', rangerLight:'#8ab4ff', metal:'#c6b178', bolt:'#fff0c7' },
+  };
+  const HERO_ROLE_PARTS = {
+    sword: [[2,19,7,8,'heavyArmor'],[22,19,7,8,'heavyArmor'],[8,31,16,4,'heavyArmor'],[11,32,2,2,'heavyTrim'],[21,32,2,2,'heavyTrim'],[27,35,4,3,'heavyTrim']],
+    staff: [[7,28,18,10,'robe'],[5,32,4,8,'robe'],[23,32,4,8,'robe'],[9,29,3,2,'robeLight'],[20,29,3,2,'robeLight'],[27,8,7,2,'rune'],[29,7,3,3,'crystal'],[30,11,2,2,'crystal']],
+    crossbow: [[4,7,19,3,'ranger'],[2,10,5,8,'ranger'],[6,19,4,6,'rangerLight'],[23,29,5,5,'ranger'],[25,34,4,8,'ranger'],[27,36,5,2,'metal'],[28,23,4,2,'bolt'],[30,26,5,2,'metal']],
+  };
   const WEAPON_PARTS = {
     sword: [[30,18,2,22,'white'],[28,17,6,2,'brass'],[30,40,2,5,'leather'],[29,18,1,18,'hairLight']],
     staff: [[29,12,3,33,'leather'],[27,8,7,7,'brass'],[29,9,3,4,'white'],[26,7,3,3,'emberEye'],[33,11,3,3,'emberEye']],
@@ -69,10 +79,13 @@
     const frame = model.reducedMotion ? 0 : (model.frame || 0) % 4;
     const x = Math.round((model.x || 0) - 16 * scale);
     const y = Math.round((model.y || 0) - 40 * scale);
-    const palette = model.hitFlash ? { ...HERO_PALETTE, skin: '#fff0c7', armor: '#fff0c7', armorShadow: '#e7ece7', cloak: '#fff0c7' } : HERO_PALETTE;
+    const weapon = HERO_ROLE_PALETTES[model.weapon] ? model.weapon : 'sword';
+    const rolePalette = { ...HERO_PALETTE, ...HERO_ROLE_PALETTES[weapon] };
+    const palette = model.hitFlash ? { ...rolePalette, skin: '#fff0c7', armor: '#fff0c7', armorShadow: '#e7ece7', cloak: '#fff0c7' } : rolePalette;
     const breathing = model.pose === 'attack' || model.reducedMotion ? 0 : (frame >= 2 ? 1 : 0);
     drawParts(ctx, HERO_PARTS, x, y, scale, palette, breathing);
     drawParts(ctx, HERO_DETAIL_PARTS, x, y, scale, palette, breathing);
+    drawParts(ctx, HERO_ROLE_PARTS[weapon], x, y, scale, palette, breathing);
     if (!model.reducedMotion && frame >= 2) {
       drawParts(ctx, [[0,31,3,10,'cloak'],[2,39,5,3,'cloakDark']], x, y, scale, palette, 0, -1);
     }
@@ -191,6 +204,13 @@
     guard: [[9,8,3,2,'detail'],[22,8,3,2,'detail'],[10,19,2,2,'detail'],[23,19,2,2,'detail'],[14,30,2,2,'detail'],[20,30,2,2,'detail']],
     boss: [[8,7,4,2,'detail'],[24,7,4,2,'detail'],[10,18,3,2,'detail'],[23,18,3,2,'detail'],[12,32,3,2,'detail'],[21,32,3,2,'detail'],[14,39,8,2,'detail']],
   };
+  const BOSS_ROLE_PARTS = {
+    'furnace-lord': [[5,1,5,5,'ember'],[25,1,5,5,'ember'],[6,17,4,9,'ember'],[26,17,4,9,'ember'],[14,22,8,8,'ember']],
+    'frost-queen': [[10,0,4,6,'rift'],[16,0,4,5,'rift'],[22,0,4,6,'rift'],[5,18,4,8,'rift'],[27,18,4,8,'rift'],[14,22,8,3,'rift']],
+    'root-mother': [[3,3,5,7,'rift'],[28,3,5,7,'rift'],[1,16,6,4,'rift'],[29,16,6,4,'rift'],[13,21,10,8,'rift'],[8,37,4,7,'rift'],[23,37,4,7,'rift']],
+    'sky-executioner': [[6,5,6,3,'rift'],[26,5,6,3,'rift'],[0,14,8,4,'rift'],[28,14,8,4,'rift'],[14,20,8,5,'rift'],[30,29,5,3,'ember']],
+    'void-pioneer': [[5,1,5,5,'rift'],[26,1,5,5,'rift'],[2,15,7,5,'rift'],[29,15,7,5,'rift'],[13,20,10,10,'rift'],[9,39,4,5,'rift'],[23,39,4,5,'rift']],
+  };
 
   const themedPalettes = {
     'ice-wraith': { outline:'#17232b', body:'#547487', bodyDark:'#2b414d', eye:'#b8f1ff', core:'#80d8ff', weapon:'#dff8ff' },
@@ -231,6 +251,7 @@
     drawParts(ctx, parts, model.x - width * scale / 2, model.y - 24 * scale, scale, palette, bob);
     const detailKind = ENEMY_DETAIL_PARTS[kind] ? kind : (isBoss ? 'boss' : (kind === 'hound' ? 'hound' : 'guard'));
     drawParts(ctx, ENEMY_DETAIL_PARTS[detailKind], model.x - width * scale / 2, model.y - 24 * scale, scale, palette, bob);
+    if (isBoss && BOSS_ROLE_PARTS[kind]) drawParts(ctx, BOSS_ROLE_PARTS[kind], model.x - width * scale / 2, model.y - 24 * scale, scale, palette, bob);
     if (isBoss && model.bossPhase === 2) {
       const pulse = 5 + ((model.frame || 0) % 4) * 2; ctx.strokeStyle = '#f58b4a'; ctx.lineWidth = 2; ctx.strokeRect(model.x - pulse, model.y - pulse, pulse * 2, pulse * 2);
     }
