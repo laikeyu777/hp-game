@@ -54,6 +54,18 @@
     return Math.min(maxHp, currentHp + maxHp * ratio);
   }
 
+  function isEncounterCleared(enemies) {
+    return Array.isArray(enemies) && enemies.length > 0 && enemies.every(enemy => !Number.isFinite(enemy?.hp) || enemy.hp <= 0);
+  }
+
+  function createSettlementGate() {
+    let claimed = false;
+    return {
+      claim() { if (claimed) return false; claimed = true; return true; },
+      isClaimed() { return claimed; },
+    };
+  }
+
   function getEnemyDamage(baseDamage, floor, elite = false, resilienceLevel = 0) {
     const growth = 1 + Math.max(0, floor - 1) * 0.06;
     const eliteMultiplier = elite ? 1.35 : 1;
@@ -88,5 +100,5 @@
     return { type: list[Math.max(0, Math.min(list.length - 1, phase - 1))], phase };
   }
 
-  return { applyHitEffects, tickBurn, resolveDefeat, getAttackInterval, getEnemyAttackInterval, getComboMultiplier, recoverAfterFloor, getEnemyDamage, resolveWeaponSkill, getBossPhase, getBossAction };
+  return { applyHitEffects, tickBurn, resolveDefeat, getAttackInterval, getEnemyAttackInterval, getComboMultiplier, recoverAfterFloor, isEncounterCleared, createSettlementGate, getEnemyDamage, resolveWeaponSkill, getBossPhase, getBossAction };
 });
