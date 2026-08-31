@@ -183,9 +183,14 @@
 
   function updatePersonalBest(challengeSave, result, mode) {
     const save = sanitizeChallengeSave(challengeSave);
+    const suppliedScore = Number(result.score);
+    const calculatedScore = calculateScore(result);
+    const score = mode === 'normal' && (!Number.isFinite(suppliedScore) || suppliedScore <= 0)
+      ? calculatedScore.score
+      : Math.max(0, suppliedScore || 0);
     const record = {
       code: result.code,
-      score: Number(result.score) || 0,
+      score,
       completedFloors: Number(result.completedFloors) || 0,
       durationMs: Number(result.durationMs) || 0,
       hpRatio: Number(result.hpRatio) || 0,

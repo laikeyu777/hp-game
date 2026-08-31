@@ -110,6 +110,23 @@ test('speed bonus follows the duration formula and normal mode does not add dail
   assert.equal(save.recentRecords.length, 0);
 });
 
+test('normal runs receive a personal score without entering daily records', () => {
+  let save = Challenge.sanitizeChallengeSave({});
+  save = Challenge.updatePersonalBest(save, {
+    mode: 'normal',
+    score: 0,
+    completedFloors: 3,
+    enemiesDefeated: 6,
+    durationMs: 12000,
+    hpRatio: 0.8,
+    gold: 10,
+    weapon: 'staff',
+  }, 'normal');
+  assert.ok(save.personalBest.highestScore > 0);
+  assert.ok(save.personalBest.weapons.staff > 0);
+  assert.equal(save.dailyBest && Object.keys(save.dailyBest).length, 0);
+});
+
 test('formatDuration and formatShareText produce readable summaries', () => {
   assert.equal(Challenge.formatDuration(3723000), '1:02:03');
 
