@@ -14,6 +14,6 @@ assert.ok(game.includes("drawDamagePopups"));
 assert.ok(game.includes("navigator.vibrate"));
 assert.ok(game.includes("save.settings.sound"));
 assert.ok(game.includes("save.settings.vibration"));
-assert.ok(html.includes('game.js?v=22'));
+assert.ok(html.includes('game.js?v=24'));
 assert.ok(html.includes('shop-screen'));
-assert.ok(sw.includes('ash-corridor-v32'));
+assert.ok(sw.includes('ash-corridor-v34'));

@@ -127,6 +127,19 @@ test('normal runs receive a personal score without entering daily records', () =
   assert.equal(save.dailyBest && Object.keys(save.dailyBest).length, 0);
 });
 
+test('deeper normal runs replace the previous personal and weapon score', () => {
+  let save = Challenge.sanitizeChallengeSave({});
+  const shallow = { score: 0, completedFloors: 2, enemiesDefeated: 4, durationMs: 9000, hpRatio: 0.6, gold: 5, weapon: 'sword' };
+  const deep = { score: 0, completedFloors: 8, enemiesDefeated: 18, durationMs: 42000, hpRatio: 0.4, gold: 35, weapon: 'sword' };
+  save = Challenge.updatePersonalBest(save, shallow, 'normal');
+  const shallowScore = save.personalBest.highestScore;
+  save = Challenge.updatePersonalBest(save, deep, 'normal');
+  assert.ok(save.personalBest.highestScore > shallowScore);
+  assert.equal(save.personalBest.highestScore, Challenge.calculateScore(deep).score);
+  assert.equal(save.personalBest.weapons.sword, Challenge.calculateScore(deep).score);
+  assert.equal(save.personalBest.highestFloor, 8);
+});
+
 test('formatDuration and formatShareText produce readable summaries', () => {
   assert.equal(Challenge.formatDuration(3723000), '1:02:03');
 
