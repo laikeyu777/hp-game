@@ -10,6 +10,10 @@ assert.equal(CombatLogic.shouldSubmitRunResult(true, 1), false);
 assert.equal(CombatLogic.shouldSubmitRunResult(true, 49), false);
 assert.equal(CombatLogic.shouldSubmitRunResult(true, 50), true);
 assert.equal(CombatLogic.shouldSubmitRunResult(false, 12), true);
+assert.equal(CombatLogic.getCompletedFloor(true, 1), 1);
+assert.equal(CombatLogic.getCompletedFloor(true, 12), 12);
+assert.equal(CombatLogic.getCompletedFloor(false, 12), 11);
+assert.equal(CombatLogic.getCompletedFloor(false, 1), 0);
 
 assert.equal(CombatLogic.getIncomingDamage(100, [], 1, 1), 100);
 assert.equal(CombatLogic.getIncomingDamage(100, ['guard'], 1, 1), 88);

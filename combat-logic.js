@@ -70,6 +70,11 @@
     return !won || Number(floor) >= Number(maxFloor);
   }
 
+  function getCompletedFloor(won, floor) {
+    const currentFloor = Math.max(1, Math.floor(Number(floor) || 1));
+    return Math.max(0, won ? currentFloor : currentFloor - 1);
+  }
+
   function getIncomingDamage(baseDamage, perks = [], buildMultiplier = 1, skillMultiplier = 1) {
     const guardMultiplier = perks.includes('guard') ? 0.88 : 1;
     const damage = Math.max(0, Number(baseDamage) || 0)
@@ -113,5 +118,5 @@
     return { type: list[Math.max(0, Math.min(list.length - 1, phase - 1))], phase };
   }
 
-  return { applyHitEffects, tickBurn, resolveDefeat, getAttackInterval, getEnemyAttackInterval, getComboMultiplier, recoverAfterFloor, isEncounterCleared, createSettlementGate, shouldSubmitRunResult, getIncomingDamage, getEnemyDamage, resolveWeaponSkill, getBossPhase, getBossAction };
+  return { applyHitEffects, tickBurn, resolveDefeat, getAttackInterval, getEnemyAttackInterval, getComboMultiplier, recoverAfterFloor, isEncounterCleared, createSettlementGate, shouldSubmitRunResult, getCompletedFloor, getIncomingDamage, getEnemyDamage, resolveWeaponSkill, getBossPhase, getBossAction };
 });
