@@ -26,14 +26,14 @@
 
 ### 广告服务层
 
-在 `hupu-platform.js` 增加 `showRewardedAd({ placement })`。该方法只探测虎扑宿主提供的官方广告桥接对象并返回结构化结果：
+在 `hupu-platform.js` 增加 `showRewardedAd({ placement })`。该方法只调用虎扑官方的 `window.ColorboxAI.vatask.completeRewardVideo()`，不得直连原生 Bridge，也不得传入活动 id。只有返回 `code === 200` 且 `data.rewarded === true` 才算成功；成功后调用 `window.ColorboxAI.vatask.getActivityTaskState()` 刷新平台任务状态。适配层向游戏返回结构化结果：
 
 ```js
 { ok: true, placement: 'revive' }
 { ok: false, reason: 'offline' | 'host_unavailable' | 'load_failed' | 'dismissed' | 'timeout' }
 ```
 
-广告桥接未提供时不得把本地模拟当成成功。适配层保留超时和异常捕获，使广告失败不会阻塞游戏。
+广告桥接未提供时不得把本地模拟当成成功。适配层保留超时和异常捕获，将官方的 `APP_REQUIRED`、`LOGIN_REQUIRED`、`UNAVAILABLE`、`NOT_REWARDED`、`REQUEST_FAILED` 和 `REWARD_FLOW_FAILED` 转换成稳定原因，使广告失败不会阻塞游戏。广告只能由玩家点击触发，同一时间只允许一个流程，进行中必须禁用两个广告按钮。
 
 ### 存档状态
 
