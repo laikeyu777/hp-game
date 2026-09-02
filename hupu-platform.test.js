@@ -52,6 +52,26 @@ test('request failures return a typed result and do not throw', async () => {
   });
 });
 
+test('request accepts null options and does not forward caller authorization headers', async () => {
+  const calls = [];
+  await withHost({
+    cloud: {
+      request: async params => {
+        calls.push(params);
+        return { statusCode: 200, code: 200, data: {} };
+      },
+    },
+  }, async () => {
+    const result = await HupuPlatform.request('/api/leaderboard/list', null);
+    assert.equal(result.ok, true);
+
+    await HupuPlatform.request('/api/leaderboard/list', {
+      headers: { Authorization: 'Bearer private-token', 'X-Token': 'private-token', Accept: 'application/json' },
+    });
+    assert.deepEqual(calls[1].headers, { Accept: 'application/json' });
+  });
+});
+
 test('submitLeaderboard calls the cloud adapter and normalizes its returned entry', async () => {
   const calls = [];
   await withHost({
@@ -69,6 +89,21 @@ test('submitLeaderboard calls the cloud adapter and normalizes its returned entr
     assert.equal(calls[0].url, 'https://activity.example.test/api/leaderboard/submit');
     assert.equal(calls[0].method, 'POST');
     assert.equal(calls[0].auth, true);
+  });
+});
+
+test('submitLeaderboard rejects a remote entry without a non-empty Hupu nickname', async () => {
+  await withHost({
+    cloud: {
+      request: async () => ({
+        statusCode: 200,
+        code: 200,
+        data: { entry: { rank: 2, nickname: '   ', score: 1234, durationMs: 5000, weapon: 'staff' } },
+      }),
+    },
+  }, async () => {
+    const result = await HupuPlatform.submitLeaderboard({ weapon: 'staff', completedFloors: 10 });
+    assert.deepEqual(result, { ok: false, reason: 'invalid_response' });
   });
 });
 
@@ -97,6 +132,49 @@ test('fetchLeaderboard requests list and current-player rank in parallel', async
   });
 });
 
+test('fetchLeaderboard returns only whitelisted leaderboard fields for the current player', async () => {
+  await withHost({
+    cloud: {
+      request: async params => {
+        if (params.url.includes('/me?')) {
+          return {
+            statusCode: 200,
+            code: 200,
+            data: {
+              rank: 3,
+              nickname: '灰烬旅人',
+              score: 90,
+              completedFloors: 8,
+              durationMs: 12000,
+              weapon: 'staff',
+              submittedAt: '2026-09-02T12:00:00.000Z',
+              submissionKey: 'daily-123',
+              puid: 'private-id',
+              userId: 'private-user-id',
+              phoneNumber: '13800138000',
+              unknownServerField: 'do-not-expose',
+            },
+          };
+        }
+        return { statusCode: 200, code: 200, data: { entries: [{ rank: 1, nickname: 'A', score: 100 }] } };
+      },
+    },
+  }, async () => {
+    const result = await HupuPlatform.fetchLeaderboard('all');
+    assert.equal(result.ok, true);
+    assert.deepEqual(result.me, {
+      rank: 3,
+      nickname: '灰烬旅人',
+      score: 90,
+      completedFloors: 8,
+      durationMs: 12000,
+      weapon: 'staff',
+      submittedAt: '2026-09-02T12:00:00.000Z',
+      submissionKey: 'daily-123',
+    });
+  });
+});
+
 test('flushPending attempts each submission once and reports failures for retry', async () => {
   const attempted = [];
   await withHost({
@@ -104,7 +182,7 @@ test('flushPending attempts each submission once and reports failures for retry'
       request: async params => {
         attempted.push(params.data.submissionKey);
         if (params.data.submissionKey === 'failed') return { statusCode: 503, code: 503, message: 'offline' };
-        return { statusCode: 200, code: 200, data: { entry: { rank: 1, score: 100 } } };
+        return { statusCode: 200, code: 200, data: { entry: { rank: 1, nickname: '灰烬旅人', score: 100 } } };
       },
     },
   }, async () => {

@@ -8,6 +8,24 @@
   const DEFAULT_TIMEOUT_MS = 3500;
   const attemptedThisSession = new Set();
   const failedThisSession = new Set();
+  const SAFE_ENTRY_FIELDS = [
+    'rank',
+    'nickname',
+    'score',
+    'completedFloors',
+    'enemiesDefeated',
+    'bossesDefeated',
+    'durationMs',
+    'hpRatio',
+    'gold',
+    'cleared',
+    'weapon',
+    'mode',
+    'code',
+    'scope',
+    'submittedAt',
+    'submissionKey',
+  ];
 
   function getColorbox() {
     return root && root.ColorboxAI && typeof root.ColorboxAI === 'object' ? root.ColorboxAI : null;
@@ -69,17 +87,22 @@
     };
     if (source.data !== undefined) result.data = source.data;
     if (source.envId) result.envId = String(source.envId);
-    if (source.headers && typeof source.headers === 'object') result.headers = { ...source.headers };
+    if (source.headers && typeof source.headers === 'object') {
+      const blockedHeader = /^(authorization|proxy-authorization|x-(?:auth|token)|.*token.*)$/i;
+      const headers = Object.fromEntries(Object.entries(source.headers).filter(([name]) => !blockedHeader.test(name)));
+      if (Object.keys(headers).length) result.headers = headers;
+    }
     return result;
   }
 
-  async function request(path, options = {}) {
+  async function request(path, options) {
+    const normalizedOptions = options && typeof options === 'object' ? options : {};
     const colorbox = getColorbox();
     const cloud = colorbox && colorbox.cloud;
     if (!cloud || typeof cloud.request !== 'function') return failure('host_unavailable');
 
-    const params = { url: resolveUrl(path), ...cleanOptions(options) };
-    const timeoutMs = Number.isFinite(Number(options.timeout)) ? Math.max(100, Number(options.timeout)) : DEFAULT_TIMEOUT_MS;
+    const params = { url: resolveUrl(path), ...cleanOptions(normalizedOptions) };
+    const timeoutMs = Number.isFinite(Number(normalizedOptions.timeout)) ? Math.max(100, Number(normalizedOptions.timeout)) : DEFAULT_TIMEOUT_MS;
     try {
       const pending = Promise.resolve().then(() => cloud.request.call(cloud, params));
       const response = await Promise.race([pending, timeoutPromise(timeoutMs)]);
@@ -105,10 +128,23 @@
     return Object.fromEntries(Object.entries(source).filter(([key]) => !blocked.test(key)));
   }
 
-  function normalizeRemoteEntry(value) {
+  function pickSafeEntry(entry) {
+    const safe = {};
+    for (const field of SAFE_ENTRY_FIELDS) {
+      if (entry[field] !== undefined) safe[field] = entry[field];
+    }
+    if (typeof safe.nickname === 'string') safe.nickname = safe.nickname.trim();
+    return safe;
+  }
+
+  function normalizeRemoteEntry(value, { requireNickname = false } = {}) {
     const candidate = value && typeof value === 'object' ? (value.entry || value.result || value) : null;
     if (!candidate || !LeaderboardLogic || typeof LeaderboardLogic.sanitizeEntries !== 'function') return null;
-    return LeaderboardLogic.sanitizeEntries([candidate], { limit: 1 })[0] || null;
+    const entry = LeaderboardLogic.sanitizeEntries([candidate], { limit: 1 })[0] || null;
+    if (!entry) return null;
+    const safeEntry = pickSafeEntry(entry);
+    if (requireNickname && !safeEntry.nickname) return null;
+    return safeEntry;
   }
 
   async function submitLeaderboard(payload) {
@@ -118,7 +154,7 @@
       auth: true,
     });
     if (!response.ok) return response;
-    const entry = normalizeRemoteEntry(response.data);
+    const entry = normalizeRemoteEntry(response.data, { requireNickname: true });
     return entry ? { ok: true, entry, statusCode: response.statusCode } : failure('invalid_response');
   }
 
@@ -147,10 +183,11 @@
     if (!list.ok) return { ...list, entries: [], me: null, scope: target.type, code: target.code };
     if (!me.ok) return { ...me, entries: [], me: null, scope: target.type, code: target.code };
     const entries = LeaderboardLogic && typeof LeaderboardLogic.sanitizeEntries === 'function'
-      ? LeaderboardLogic.sanitizeEntries(responseEntries(list.data), { limit: 50 })
-      : responseEntries(list.data).slice(0, 50);
+      ? LeaderboardLogic.sanitizeEntries(responseEntries(list.data), { limit: 50 }).map(pickSafeEntry)
+      : responseEntries(list.data).slice(0, 50).map(pickSafeEntry);
     const meData = me.data && typeof me.data === 'object' ? (me.data.me || me.data.entry || me.data) : null;
-    return { ok: true, entries, me: meData, scope: target.type, code: target.code };
+    const safeMe = meData ? pickSafeEntry(meData) : null;
+    return { ok: true, entries, me: safeMe, scope: target.type, code: target.code };
   }
 
   async function flushPending(submissions, state) {
