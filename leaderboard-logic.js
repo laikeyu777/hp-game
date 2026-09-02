@@ -92,7 +92,13 @@
 
   function sameScope(left, right) {
     if (!left || !right) return true;
-    if (left.scope != null || right.scope != null) return left.scope === right.scope;
+    const leftScope = left.scope == null ? null : String(left.scope);
+    const rightScope = right.scope == null ? null : String(right.scope);
+    if (leftScope != null || rightScope != null) {
+      if (leftScope !== rightScope) return false;
+      if (leftScope === 'daily') return (left.code || '') === (right.code || '');
+      return true;
+    }
     return (left.mode || 'normal') === (right.mode || 'normal') && (left.code || '') === (right.code || '');
   }
 

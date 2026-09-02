@@ -72,6 +72,13 @@ test('upsertPersonalBest does not overwrite a daily record for a different chall
   assert.deepEqual(LeaderboardLogic.upsertPersonalBest(previous, candidate), previous);
 });
 
+test('upsertPersonalBest does not overwrite scoped daily records for different challenge codes', () => {
+  const previous = { mode: 'daily', scope: 'daily', code: 'ASH-20260902-V1-ABCD', score: 100, durationMs: 1000 };
+  const candidate = { mode: 'daily', scope: 'daily', code: 'ASH-20260903-V1-WXYZ', score: 200, durationMs: 500 };
+
+  assert.deepEqual(LeaderboardLogic.upsertPersonalBest(previous, candidate), previous);
+});
+
 test('sanitizeEntries filters malformed rows, normalizes valid rows, sorts them, and applies limit', () => {
   const entries = LeaderboardLogic.sanitizeEntries([
     { rank: 9, nickname: 'Slow', mode: 'normal', weapon: 'sword', completedFloors: 2, durationMs: 2000, hpRatio: 0.5, score: 20, submittedAt: '2026-09-02T10:00:00.000Z' },
