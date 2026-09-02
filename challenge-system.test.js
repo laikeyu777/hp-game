@@ -110,6 +110,25 @@ test('speed bonus follows the duration formula and normal mode does not add dail
   assert.equal(save.recentRecords.length, 0);
 });
 
+test('score input boundaries clamp floors, hp, duration, and negative counts', () => {
+  const result = Challenge.calculateScore({
+    completedFloors: -5,
+    enemiesDefeated: -10,
+    bossesDefeated: -2,
+    hpRatio: 2,
+    gold: -20,
+    durationMs: -1000,
+    cleared: true,
+  });
+
+  assert.equal(result.breakdown.floors, 0);
+  assert.equal(result.breakdown.enemies, 0);
+  assert.equal(result.breakdown.bosses, 0);
+  assert.equal(result.breakdown.hp, 500);
+  assert.equal(result.breakdown.gold, 0);
+  assert.equal(result.breakdown.speedBonus, 6000);
+});
+
 test('normal runs receive a personal score without entering daily records', () => {
   let save = Challenge.sanitizeChallengeSave({});
   save = Challenge.updatePersonalBest(save, {
