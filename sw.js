@@ -1,5 +1,5 @@
-const CACHE='ash-corridor-v36';
-const ASSETS=['./','./index.html','./styles.css?v=11','./challenge-system.js?v=2','./combat-logic.js?v=18','./room-logic.js?v=1','./tower-data.js?v=1','./build-system.js?v=1','./skill-progression.js?v=1','./boss-mechanics.js?v=1','./ascension.js?v=1','./achievements.js?v=1','./arena-backgrounds.js?v=1','./pixel-art.js?v=17','./reference-sprite-sheet.png','./combat-visual-state.js?v=13','./game.js?v=26','./manifest.json'];
+const CACHE='ash-corridor-v37-hupu';
+const ASSETS=['./','./index.html','./styles.css?v=12','./challenge-system.js?v=2','./leaderboard-logic.js?v=1','./leaderboard-store.js?v=1','./hupu-platform.js?v=1','./combat-logic.js?v=18','./room-logic.js?v=1','./tower-data.js?v=1','./build-system.js?v=1','./skill-progression.js?v=1','./boss-mechanics.js?v=1','./ascension.js?v=1','./achievements.js?v=1','./arena-backgrounds.js?v=1','./pixel-art.js?v=17','./reference-sprite-sheet.png','./combat-visual-state.js?v=13','./game.js?v=27','./manifest.json'];
 
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
