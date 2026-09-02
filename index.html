@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0b1110" />
   <title>一指登塔：灰烬回廊</title>
   <link rel="manifest" href="manifest.json" />
-  <link rel="stylesheet" href="styles.css?v=12" />
+  <link rel="stylesheet" href="styles.css?v=13" />
 </head>
 <body>
   <main class="app-shell">
@@ -17,7 +17,7 @@
       <p class="tagline">每一步，都把你推向更高处。</p>
       <div id="weapon-picker" class="weapon-picker" aria-label="选择武器"></div>
       <div id="skill-picker" class="skill-picker" aria-label="选择主动技能"></div>
-      <div class="menu-stats"><div><strong id="menu-essence">0</strong><small>余烬</small></div><div><strong id="menu-best">0</strong><small>最高层</small></div></div>
+      <div class="menu-stats"><div class="menu-essence-stat"><div class="essence-value"><strong id="menu-essence">0</strong><button id="essence-ad-btn" class="essence-ad-btn" type="button" aria-label="观看广告获得 80 余烬">+</button></div><small id="essence-ad-status">今日还可观看 3/3 次</small></div><div><strong id="menu-best">0</strong><small>最高层</small></div></div>
       <button id="ascension-btn" class="ghost-btn ascension-btn" disabled>普通冒险 · 通关后解锁深渊</button>
       <button id="start-btn" class="primary-btn">开始挑战 <span>↗</span></button>
       <div class="menu-actions"><button id="daily-btn" class="ghost-btn">每日挑战</button><button id="leaderboard-btn" class="ghost-btn">排行榜</button><button id="records-btn" class="ghost-btn">个人记录</button><button id="upgrade-btn" class="ghost-btn">永久成长</button><button id="codex-btn" class="ghost-btn">成就图鉴</button><button id="settings-btn" class="ghost-btn">设置</button></div>
@@ -47,14 +47,15 @@
     <section id="reward-screen" class="screen hidden" data-surface="reward"><header class="topbar"><div><span class="eyebrow">战斗结束</span><h2 id="reward-title">选择强化</h2></div><span class="floor-chip">第 <b id="reward-floor">1</b> 层</span></header><p class="section-copy" id="reward-copy">选一张卡，带着它继续向上。</p><div id="card-list" class="card-list"></div></section>
     <section id="event-screen" class="screen hidden" data-surface="event"><header class="topbar"><div><span class="eyebrow">紫色裂隙</span><h2 id="event-title">回廊异象</h2></div><span class="floor-chip">第 <b id="event-floor">1</b> 层</span></header><div class="event-symbol" id="event-symbol">✧</div><p class="event-copy" id="event-copy"></p><button id="event-action" class="primary-btn">接受</button><button id="event-skip" class="ghost-btn event-skip">离开裂隙</button></section>
     <section id="shop-screen" class="screen hidden" data-surface="shop"><header class="topbar"><div><span class="eyebrow">灰烬集市</span><h2>无名商店</h2></div><span class="essence-chip">金币 <b id="shop-gold">0</b></span></header><p class="section-copy">用战斗带回的金币换取下一段路的优势。</p><div id="shop-list" class="shop-list"></div><button id="shop-leave" class="ghost-btn shop-leave">离开商店</button></section>
-    <section id="result-screen" class="screen result-screen hidden" data-surface="result"><div class="result-glow"></div><p class="eyebrow" id="result-eyebrow">挑战结束</p><h2 id="result-title">灰烬仍在</h2><p id="result-copy" class="result-copy"></p><div id="result-score-panel" class="result-score-panel hidden"><span>综合分</span><strong id="result-score">0</strong><small id="result-breakdown"></small><small id="result-duration"></small><button id="result-copy-btn" class="ghost-btn">复制成绩</button></div><p id="result-sync-status" class="result-sync-status" aria-live="polite">待同步</p><div class="result-reward"><span>获得余烬</span><strong>+<b id="result-essence">0</b></strong></div><button id="result-btn" class="primary-btn">返回大厅</button></section>
+    <section id="result-screen" class="screen result-screen hidden" data-surface="result"><div class="result-glow"></div><p class="eyebrow" id="result-eyebrow">挑战结束</p><h2 id="result-title">灰烬仍在</h2><p id="result-copy" class="result-copy"></p><div id="result-score-panel" class="result-score-panel hidden"><span>综合分</span><strong id="result-score">0</strong><small id="result-breakdown"></small><small id="result-duration"></small><button id="result-copy-btn" class="ghost-btn">复制成绩</button></div><p id="result-sync-status" class="result-sync-status" aria-live="polite">待同步</p><div class="result-reward"><span>获得余烬</span><strong>+<b id="result-essence">0</b></strong></div><section id="revive-ad-panel" class="revive-ad-panel hidden" aria-label="广告复活"><p>本局可观看一次广告复活</p><button id="revive-ad-btn" class="primary-btn revive-ad-btn" type="button">观看广告复活</button><small id="revive-ad-status" role="status"></small></section><button id="result-btn" class="primary-btn">返回大厅</button></section>
     <section id="codex-screen" class="screen hidden" data-surface="codex"><header class="topbar"><button class="icon-btn" data-back="menu">‹</button><div><span class="eyebrow">探索记录</span><h2>成就图鉴</h2></div><span class="floor-chip"><b id="achievement-count">0</b> / 10</span></header><p class="section-copy" id="codex-summary">尚未留下记录。</p><div id="achievement-list" class="achievement-list"></div></section>
     <section id="settings-screen" class="screen hidden" data-surface="settings"><header class="topbar"><button class="icon-btn" data-back="menu">‹</button><div><span class="eyebrow">偏好</span><h2>设置</h2></div></header><div class="settings-list"><label>音效 <input id="sound-toggle" type="checkbox" checked /></label><label>震动 <input id="vibration-toggle" type="checkbox" checked /></label></div></section>
   </main>
   <script src="challenge-system.js?v=2"></script>
   <script src="leaderboard-logic.js?v=1"></script>
   <script src="leaderboard-store.js?v=1"></script>
-  <script src="hupu-platform.js?v=1"></script>
+  <script src="hupu-platform.js?v=2"></script>
+  <script src="ad-rewards.js?v=1"></script>
   <script src="combat-logic.js?v=18"></script>
   <script src="room-logic.js?v=1"></script>
   <script src="tower-data.js?v=1"></script>
@@ -67,6 +68,6 @@
   <script src="arena-backgrounds.js?v=1"></script>
   <script src="pixel-art.js?v=17"></script>
   <script src="combat-visual-state.js?v=13"></script>
-  <script src="game.js?v=27"></script>
+  <script src="game.js?v=28"></script>
 </body>
 </html>

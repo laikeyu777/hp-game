@@ -35,5 +35,5 @@ test('leaderboard UI supports both scopes, cached fallback, and result sync copy
 test('leaderboard screen uses a refreshed stylesheet version for its new mobile styles', () => {
   const html = read('index.html');
 
-  assert.match(html, /href="styles\.css\?v=12"/);
+  assert.match(html, /href="styles\.css\?v=13"/);
 });

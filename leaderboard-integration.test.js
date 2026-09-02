@@ -63,7 +63,7 @@ test('the offline shell declares the final leaderboard cache revision', () => {
   const serviceWorker = fs.readFileSync('./sw.js', 'utf8');
   const game = fs.readFileSync('./game.js', 'utf8');
 
-  assert.match(serviceWorker, /ash-corridor-v37-hupu/);
-  assert.match(serviceWorker, /styles\.css\?v=12/);
-  assert.match(game, /register\('sw\.js\?v=37'/);
+  assert.match(serviceWorker, /ash-corridor-v38-hupu/);
+  assert.match(serviceWorker, /styles\.css\?v=13/);
+  assert.match(game, /register\('sw\.js\?v=38'/);
 });
