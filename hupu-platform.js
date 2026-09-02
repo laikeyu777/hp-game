@@ -8,6 +8,7 @@
   const DEFAULT_TIMEOUT_MS = 3500;
   const attemptedThisSession = new Set();
   const failedThisSession = new Set();
+  let rewardedAdInProgress = false;
   const SAFE_ENTRY_FIELDS = [
     'rank',
     'nickname',
@@ -224,6 +225,62 @@
     return { ok: failed.length === 0, synced, failed, state: current };
   }
 
+  function normalizeAdReason(value, fallback = 'reward_flow_failed') {
+    const reason = String(value || '').trim().toLowerCase();
+    return reason || fallback;
+  }
+
+  async function showRewardedAd(options = {}) {
+    const source = options && typeof options === 'object' ? options : {};
+    const placement = source.placement === 'revive' ? 'revive' : 'essence';
+    if (root && root.navigator && root.navigator.onLine === false) {
+      return failure('offline', { placement });
+    }
+    const colorbox = getColorbox();
+    const vatask = colorbox && colorbox.vatask;
+    if (!vatask || typeof vatask.completeRewardVideo !== 'function') {
+      return failure('host_unavailable', { placement });
+    }
+    if (rewardedAdInProgress) return failure('ad_in_progress', { placement });
+
+    const timeoutMs = Number.isFinite(Number(source.timeout))
+      ? Math.max(100, Number(source.timeout))
+      : DEFAULT_TIMEOUT_MS;
+    rewardedAdInProgress = true;
+    try {
+      const pending = Promise.resolve().then(() => vatask.completeRewardVideo.call(vatask));
+      const response = await Promise.race([pending, timeoutPromise(timeoutMs)]);
+      const rewarded = Number(response && response.code) === 200
+        && response && response.data && response.data.rewarded === true;
+      if (!rewarded) {
+        const officialReason = response && response.data && response.data.reason;
+        return failure(normalizeAdReason(officialReason, 'not_rewarded'), {
+          ...(response && response.message ? { message: String(response.message) } : {}),
+          placement,
+        });
+      }
+
+      let taskState;
+      if (typeof vatask.getActivityTaskState === 'function') {
+        try {
+          const stateResponse = await vatask.getActivityTaskState.call(vatask);
+          if (Number(stateResponse && stateResponse.code) === 200 && stateResponse.data) {
+            taskState = stateResponse.data;
+          }
+        } catch {}
+      }
+      return { ok: true, placement, ...(taskState ? { taskState } : {}) };
+    } catch (error) {
+      const timedOut = error && error.message === 'request_timeout';
+      return failure(timedOut ? 'timeout' : 'reward_flow_failed', {
+        ...(timedOut || !error || !error.message ? {} : { message: String(error.message) }),
+        placement,
+      });
+    } finally {
+      rewardedAdInProgress = false;
+    }
+  }
+
   return {
     DEFAULT_TIMEOUT_MS,
     getUser,
@@ -231,5 +288,6 @@
     submitLeaderboard,
     fetchLeaderboard,
     flushPending,
+    showRewardedAd,
   };
 });

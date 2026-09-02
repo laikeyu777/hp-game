@@ -201,3 +201,122 @@ test('flushPending attempts each submission once and reports failures for retry'
     assert.deepEqual(second.failed, ['failed']);
   });
 });
+
+test('rewarded video accepts only confirmed completion and refreshes task state', async () => {
+  let refreshed = 0;
+  await withHost({
+    vatask: {
+      completeRewardVideo: async () => ({ code: 200, message: 'success', data: { rewarded: true } }),
+      getActivityTaskState: async () => {
+        refreshed += 1;
+        return { code: 200, message: 'success', data: { availableChanceCount: 1, tasks: [] } };
+      },
+    },
+  }, async () => {
+    const result = await HupuPlatform.showRewardedAd({ placement: 'revive' });
+    assert.equal(result.ok, true);
+    assert.equal(result.placement, 'revive');
+    assert.equal(result.taskState.availableChanceCount, 1);
+    assert.equal(refreshed, 1);
+  });
+});
+
+test('rewarded video fails closed for missing hosts and incomplete views', async () => {
+  await withHost({}, async () => {
+    assert.deepEqual(await HupuPlatform.showRewardedAd({ placement: 'essence' }), {
+      ok: false,
+      reason: 'host_unavailable',
+      placement: 'essence',
+    });
+  });
+
+  await withHost({
+    vatask: {
+      completeRewardVideo: async () => ({
+        code: 200,
+        message: '请完整观看视频',
+        data: { rewarded: false, reason: 'NOT_REWARDED' },
+      }),
+    },
+  }, async () => {
+    assert.deepEqual(await HupuPlatform.showRewardedAd({ placement: 'revive' }), {
+      ok: false,
+      reason: 'not_rewarded',
+      message: '请完整观看视频',
+      placement: 'revive',
+    });
+  });
+});
+
+test('rewarded video preserves official failure reasons and catches bridge failures', async () => {
+  await withHost({
+    vatask: {
+      completeRewardVideo: async () => ({
+        code: 403,
+        message: '请在虎扑 App 内打开',
+        data: { rewarded: false, reason: 'APP_REQUIRED' },
+      }),
+    },
+  }, async () => {
+    const result = await HupuPlatform.showRewardedAd({ placement: 'essence' });
+    assert.equal(result.ok, false);
+    assert.equal(result.reason, 'app_required');
+    assert.equal(result.message, '请在虎扑 App 内打开');
+  });
+
+  await withHost({
+    vatask: {
+      completeRewardVideo: async () => { throw new Error('bridge unavailable'); },
+    },
+  }, async () => {
+    const result = await HupuPlatform.showRewardedAd({ placement: 'revive' });
+    assert.deepEqual(result, {
+      ok: false,
+      reason: 'reward_flow_failed',
+      message: 'bridge unavailable',
+      placement: 'revive',
+    });
+  });
+});
+
+test('rewarded video times out and releases its in-progress lock', async () => {
+  await withHost({
+    vatask: {
+      completeRewardVideo: async () => new Promise(() => {}),
+    },
+  }, async () => {
+    const timedOut = await HupuPlatform.showRewardedAd({ placement: 'essence', timeout: 100 });
+    assert.equal(timedOut.ok, false);
+    assert.equal(timedOut.reason, 'timeout');
+
+    globalThis.ColorboxAI.vatask.completeRewardVideo = async () => ({ code: 200, message: 'success', data: { rewarded: true } });
+    const retried = await HupuPlatform.showRewardedAd({ placement: 'essence' });
+    assert.equal(retried.ok, true);
+  });
+});
+
+test('rewarded video permits only one in-progress flow', async () => {
+  let release;
+  let calls = 0;
+  const gate = new Promise(resolve => { release = resolve; });
+  await withHost({
+    vatask: {
+      completeRewardVideo: async () => {
+        calls += 1;
+        await gate;
+        return { code: 200, message: 'success', data: { rewarded: true } };
+      },
+    },
+  }, async () => {
+    const first = HupuPlatform.showRewardedAd({ placement: 'revive' });
+    await new Promise(resolve => setImmediate(resolve));
+    assert.deepEqual(await HupuPlatform.showRewardedAd({ placement: 'essence' }), {
+      ok: false,
+      reason: 'ad_in_progress',
+      placement: 'essence',
+    });
+    assert.equal(calls, 1);
+    release();
+    assert.equal((await first).ok, true);
+  });
+});
