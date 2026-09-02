@@ -99,7 +99,7 @@
   function upsertPersonalBest(previous, candidate) {
     if (!previous) return candidate ? { ...candidate } : null;
     if (!candidate) return { ...previous };
-    if (!sameScope(previous, candidate)) return { ...candidate };
+    if (!sameScope(previous, candidate)) return { ...previous };
     return compareEntries(candidate, previous) > 0 ? { ...candidate } : { ...previous };
   }
 

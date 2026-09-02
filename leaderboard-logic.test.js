@@ -58,6 +58,20 @@ test('upsertPersonalBest keeps the stronger record and replaces weaker previous 
   assert.equal(LeaderboardLogic.upsertPersonalBest(null, { score: 10 }).score, 10);
 });
 
+test('upsertPersonalBest does not overwrite all-time records with daily records', () => {
+  const allTime = { mode: 'normal', scope: 'all', score: 100, durationMs: 1000 };
+  const daily = { mode: 'daily', scope: 'daily', code: 'ASH-20260902-V1-ABCD', score: 200, durationMs: 500 };
+
+  assert.deepEqual(LeaderboardLogic.upsertPersonalBest(allTime, daily), allTime);
+});
+
+test('upsertPersonalBest does not overwrite a daily record for a different challenge code', () => {
+  const previous = { mode: 'daily', code: 'ASH-20260902-V1-ABCD', score: 100, durationMs: 1000 };
+  const candidate = { mode: 'daily', code: 'ASH-20260903-V1-WXYZ', score: 200, durationMs: 500 };
+
+  assert.deepEqual(LeaderboardLogic.upsertPersonalBest(previous, candidate), previous);
+});
+
 test('sanitizeEntries filters malformed rows, normalizes valid rows, sorts them, and applies limit', () => {
   const entries = LeaderboardLogic.sanitizeEntries([
     { rank: 9, nickname: 'Slow', mode: 'normal', weapon: 'sword', completedFloors: 2, durationMs: 2000, hpRatio: 0.5, score: 20, submittedAt: '2026-09-02T10:00:00.000Z' },
