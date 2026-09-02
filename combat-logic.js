@@ -58,6 +58,10 @@
     return Array.isArray(enemies) && enemies.length > 0 && enemies.every(enemy => !Number.isFinite(enemy?.hp) || enemy.hp <= 0);
   }
 
+  function shouldFinishEncounter({ running, finishing, enemies } = {}) {
+    return Boolean(running && !finishing && isEncounterCleared(enemies));
+  }
+
   function createSettlementGate() {
     let claimed = false;
     return {
@@ -118,5 +122,5 @@
     return { type: list[Math.max(0, Math.min(list.length - 1, phase - 1))], phase };
   }
 
-  return { applyHitEffects, tickBurn, resolveDefeat, getAttackInterval, getEnemyAttackInterval, getComboMultiplier, recoverAfterFloor, isEncounterCleared, createSettlementGate, shouldSubmitRunResult, getCompletedFloor, getIncomingDamage, getEnemyDamage, resolveWeaponSkill, getBossPhase, getBossAction };
+  return { applyHitEffects, tickBurn, resolveDefeat, getAttackInterval, getEnemyAttackInterval, getComboMultiplier, recoverAfterFloor, isEncounterCleared, shouldFinishEncounter, createSettlementGate, shouldSubmitRunResult, getCompletedFloor, getIncomingDamage, getEnemyDamage, resolveWeaponSkill, getBossPhase, getBossAction };
 });

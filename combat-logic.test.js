@@ -5,6 +5,10 @@ assert.equal(CombatLogic.isEncounterCleared([{ hp: 0 }, { hp: -4 }]), true);
 assert.equal(CombatLogic.isEncounterCleared([{ hp: 1 }, { hp: 0 }]), false);
 assert.equal(CombatLogic.isEncounterCleared([{ hp: NaN }]), true);
 assert.equal(CombatLogic.isEncounterCleared([]), false);
+assert.equal(CombatLogic.shouldFinishEncounter({ running: true, finishing: false, enemies: [{ hp: 0 }] }), true);
+assert.equal(CombatLogic.shouldFinishEncounter({ running: false, finishing: false, enemies: [{ hp: 0 }] }), false);
+assert.equal(CombatLogic.shouldFinishEncounter({ running: true, finishing: true, enemies: [{ hp: 0 }] }), false);
+assert.equal(CombatLogic.shouldFinishEncounter({ running: true, finishing: false, enemies: [{ hp: 1 }] }), false);
 
 assert.equal(CombatLogic.shouldSubmitRunResult(true, 1), false);
 assert.equal(CombatLogic.shouldSubmitRunResult(true, 49), false);
