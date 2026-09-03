@@ -1,0 +1,6 @@
+{
+  "name": "ash-corridor-activity-api",
+  "private": true,
+  "engines": { "node": ">=18.15" },
+  "dependencies": { "@cloudbase/node-sdk": "^3.16.0" }
+}

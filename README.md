@@ -23,11 +23,14 @@ npx serve .
 
 ## 部署前置条件
 
-客户端适配和 API 契约已经具备，但云端排行榜尚未自动部署。上线前需要：
+客户端适配、服务端云函数骨架、数据库迁移和 API 契约已经准备好，但云端排行榜尚未部署到虎扑活动环境。上线前需要：
 
-1. 在虎扑活动环境部署 `/api/leaderboard/list`、`/api/leaderboard/me`、`/api/leaderboard/submit`，详情见 `docs/superpowers/specs/2026-09-02-hupu-leaderboard-api-contract.md`。
-2. 服务端从虎扑宿主认证上下文取得账号身份，不能接受客户端传来的账号 ID。
-3. 服务端重新计算积分，并校验层数、武器、每日挑战码、用时和重复提交键。
-4. 配置活动 API 基地址，并在虎扑登录、离线、超时和重复提交场景完成冒烟测试。
+1. 在虎扑活动环境复用 `activity_api`，应用 `activity/migrations/20260902000001_create_leaderboard_entries.sql`，并部署 `activity/cloudfunctions/activity_api/`。
+2. 创建或更新独立接口 `/api/leaderboard/list`、`/api/leaderboard/me`、`/api/leaderboard/submit`；公开读取与登录提交使用不同的鉴权策略。
+3. 服务端从虎扑宿主认证上下文取得账号身份，不能接受客户端传来的账号 ID；服务端重新计算积分，并校验层数、武器、每日挑战码、用时和重复提交键。
+4. 配置活动 API 基地址，并用 curl 完成健康检查、无 Token 拦截、登录态写入读取和跨域预检冒烟测试。
+5. 在 Shaper 创建应用时填写名称、描述和 Logo，上传 `h5/` 压缩包，扫码真机预览后再提交审核。
+
+服务端实现说明：`activity/cloudfunctions/activity_api/index.js` 已提供请求解析、网关注入身份读取、分数重算、榜单排序和三条接口处理逻辑。由于当前 Codex 会话尚未启用虎扑云端连接工具，以上文件只作为待部署产物，不代表线上接口已生效。
 
 未完成这些步骤前，排行榜将以本地缓存和待同步状态运行，不应宣称云端榜单已经上线。

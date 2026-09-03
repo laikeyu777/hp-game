@@ -1,0 +1,69 @@
+{
+  "destination": "让虎扑玩家在不影响离线游玩的前提下，参与真实的每日挑战榜和历史总榜。",
+  "decisions": [
+    {
+      "id": "D1",
+      "question": "排行榜提供哪些榜单？",
+      "options": {
+        "A": "每日挑战榜和历史总榜",
+        "B": "仅历史总榜"
+      },
+      "recommend": "A",
+      "depends_on": [],
+      "status": "resolved",
+      "presented": true,
+      "choice": "A",
+      "note": "开发者已确认每日挑战码和个人最佳记录，并确认排行榜纳入游戏。"
+    },
+    {
+      "id": "D2",
+      "question": "排行榜是否使用虎扑账号昵称展示？",
+      "options": {
+        "A": "使用虎扑账号昵称",
+        "B": "使用游戏内自定义昵称"
+      },
+      "recommend": "A",
+      "depends_on": [],
+      "status": "resolved",
+      "presented": true,
+      "choice": "A",
+      "note": "开发者明确要求使用虎扑账号昵称。"
+    },
+    {
+      "id": "D3",
+      "kind": "deployment",
+      "question": "跨玩家排行榜是否需要云端保存？",
+      "options": {
+        "A": "需要云端保存",
+        "B": "只保存在本地"
+      },
+      "recommend": "A",
+      "depends_on": [
+        "D1",
+        "D2"
+      ],
+      "status": "resolved",
+      "note": "开发者明确确认部署真实云端排行榜。",
+      "presented": true,
+      "choice": "A"
+    },
+    {
+      "id": "DP",
+      "kind": "prototype",
+      "question": "要先看个雏形模板吗？",
+      "options": {
+        "A": "要看（推荐）",
+        "B": "不用，直接做"
+      },
+      "recommend": "A",
+      "depends_on": [
+        "D1",
+        "D2"
+      ],
+      "status": "resolved",
+      "presented": true,
+      "choice": "B",
+      "note": "开发者确认继续推进，现有游戏页面为已完成的交互原型。"
+    }
+  ]
+}
